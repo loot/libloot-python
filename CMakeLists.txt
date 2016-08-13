@@ -69,6 +69,12 @@ pybind11_add_module(loot_api "${CMAKE_SOURCE_DIR}/src/main.cpp")
 
 target_link_libraries(loot_api PRIVATE ${LOOT_API_STATIC_LIBRARY})
 
+########################################
+# Testing
+########################################
+
+find_package(PythonInterp REQUIRED)
+
 # Copy the API binary to the build directory.
 add_custom_command(TARGET loot_api POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -86,3 +92,7 @@ add_custom_command(TARGET loot_api POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${CMAKE_SOURCE_DIR}/src/test.py"
         "$<TARGET_FILE_DIR:loot_api>/test.py")
+
+enable_testing()
+add_test(NAME test
+         COMMAND ${PYTHON_EXECUTABLE} -m unittest test)
