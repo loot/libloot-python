@@ -96,7 +96,7 @@ add_custom_command(TARGET loot_api POST_BUILD
 enable_testing()
 add_test(NAME test
          COMMAND ${PYTHON_EXECUTABLE} -m unittest test)
-         
+
 ########################################
 # Install
 ########################################
@@ -121,6 +121,12 @@ IF (GIT_FOUND)
                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
                   OUTPUT_VARIABLE GIT_DESCRIBE_STRING
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+    IF (${GIT_DESCRIBE_STRING} MATCHES "HEAD")
+        IF ($ENV{APPVEYOR_REPO_BRANCH})
+          set(GIT_DESCRIBE_STRING $ENV{APPVEYOR_REPO_BRANCH})
+        ENDIF()
+    ENDIF()
 ELSE()
     SET (GIT_DESCRIBE_STRING "unknown-version")
 ENDIF ()
