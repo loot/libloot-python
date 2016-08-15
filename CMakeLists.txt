@@ -102,11 +102,12 @@ add_test(NAME test
 ########################################
 
 install(TARGETS loot_api
-        DESTINATION bin
+        DESTINATION "."
         CONFIGURATIONS Release)
 
 install(FILES "${LOOT_API_EXTRACTED_PATH}/${LOOT_API_SHARED_LIBRARY}"
-        DESTINATION bin
+        "${CMAKE_SOURCE_DIR}/docs/README.md"
+        DESTINATION "."
         CONFIGURATIONS Release)
 
 ########################################
