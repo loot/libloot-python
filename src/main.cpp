@@ -33,8 +33,11 @@ PYBIND11_PLUGIN(loot_api) {
   using loot::DatabaseInterface;
   using loot::IsCompatible;
   using loot::GameType;
+  using loot::LanguageCode;
   using loot::LootVersion;
   using loot::MessageType;
+  using loot::MasterlistInfo;
+  using loot::PluginCleanliness;
   using loot::PluginMessage;
   using loot::PluginTags;
 
@@ -46,10 +49,34 @@ PYBIND11_PLUGIN(loot_api) {
   enum_<GameType>(module, "GameType", "Wraps :cpp:type:`GameType <loot::GameType>`.")
     .value("tes4", GameType::tes4);
 
+  enum_<LanguageCode>(module, "LanguageCode", "Wraps :cpp:type:`LanguageCode <loot::LanguageCode>`.")
+    .value("english", LanguageCode::english)
+    .value("spanish", LanguageCode::spanish)
+    .value("russian", LanguageCode::russian)
+    .value("french", LanguageCode::french)
+    .value("chinese", LanguageCode::chinese)
+    .value("polish", LanguageCode::polish)
+    .value("brazilian_portuguese", LanguageCode::brazilian_portuguese)
+    .value("finnish", LanguageCode::finnish)
+    .value("german", LanguageCode::german)
+    .value("danish", LanguageCode::danish)
+    .value("korean", LanguageCode::korean);
+
   enum_<MessageType>(module, "MessageType", "Wraps :cpp:type:`MessageType <loot::MessageType>`.")
     .value("say", MessageType::say)
     .value("warn", MessageType::warn)
     .value("error", MessageType::error);
+
+  enum_<PluginCleanliness>(module, "PluginCleanliness", "Wraps :cpp:type:`Plugin Cleanliness <loot::PluginCleanliness>`.")
+    .value("clean", PluginCleanliness::clean)
+    .value("dirty", PluginCleanliness::dirty)
+    .value("do_not_clean", PluginCleanliness::do_not_clean)
+    .value("unknown", PluginCleanliness::unknown);
+
+  class_<MasterlistInfo>(module, "MasterlistInfo", "Wraps :cpp:class:`MasterlistInfo <loot::MasterlistInfo>`.")
+    .def_readwrite("revision_id", &MasterlistInfo::revision_id)
+    .def_readwrite("revision_date", &MasterlistInfo::revision_date)
+    .def_readwrite("is_modified", &MasterlistInfo::is_modified);
 
   class_<PluginMessage>(module, "Message", "Wraps :cpp:class:`PluginMessage <loot::PluginMessage>`.")
     .def_readwrite("type", &PluginMessage::type)
@@ -64,12 +91,20 @@ PYBIND11_PLUGIN(loot_api) {
     .def_readonly_static("major", &LootVersion::major)
     .def_readonly_static("minor", &LootVersion::minor)
     .def_readonly_static("patch", &LootVersion::patch)
-    .def_readonly_static("revision", &LootVersion::revision);
+    .def_readonly_static("revision", &LootVersion::revision)
+    .def("string", LootVersion::string);
 
   class_<DatabaseInterface, std::shared_ptr<DatabaseInterface>>(module, "DatabaseInterface", "Wraps :cpp:class:`DatabaseInterface <loot::DatabaseInterface>`.")
     .def("load_lists", &DatabaseInterface::LoadLists, "Loads the masterlist and userlist from the paths specified. Wraps :cpp:func:`LoadLists`.")
+    .def("eval_lists", &DatabaseInterface::EvalLists, "Evaluates all conditions and regular expression metadata entries in the loaded metadata lists. Wraps :cpp:func:`EvalLists`.")
+    .def("sort_plugins", &DatabaseInterface::SortPlugins, "Calculates a new load order for all a game's installed plugins and outputs the sorted order. Wraps :cpp:func:`SortPlugins`.")
+    .def("apply_load_order", &DatabaseInterface::ApplyLoadOrder, "Applies the given load order. Wraps :cpp:func:`ApplyLoadOrder`.")
+    .def("update_masterlist", &DatabaseInterface::UpdateMasterlist, "Updates the given masterlist using the given Git repository details. Wraps :cpp:func:`UpdateMasterlist`.")
+    .def("get_masterlist_revision", &DatabaseInterface::GetMasterlistRevision, "Gets the give masterlist's source control revision. Wraps :cpp:func:`GetMasterlistRevision`.")
     .def("get_plugin_tags", &DatabaseInterface::GetPluginTags, "Outputs the Bash Tags suggested for addition and removal by the database for the given plugin. Wraps :cpp:func:`GetPluginTags`.")
-    .def("get_plugin_messages", &DatabaseInterface::GetPluginMessages, "Outputs the messages associated with the given plugin in the database. Wraps :cpp:func:`GetPluginMessages`.");
+    .def("get_plugin_messages", &DatabaseInterface::GetPluginMessages, "Outputs the messages associated with the given plugin in the database. Wraps :cpp:func:`GetPluginMessages`.")
+    .def("get_plugin_cleanliness", &DatabaseInterface::GetPluginCleanliness, "Determines the database's knowledge of a plugin's cleanliness. Wraps :cpp:func:`GetPluginCleanliness`.")
+    .def("write_minimal_list", &DatabaseInterface::WriteMinimalList, "Writes a minimal metadata file containing only Bash Tag suggestions and/or cleanliness info from the loaded metadata. Wraps :cpp:func:`WriteMinimalList`.");
 
   module.def("is_compatible", &IsCompatible, "Checks for API compatibility. Wraps :cpp:func:`IsCompatible <loot::IsCompatible>`.");
 
