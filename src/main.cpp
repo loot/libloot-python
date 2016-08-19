@@ -102,7 +102,6 @@ PYBIND11_PLUGIN(loot_api) {
     .def("load_lists", &DatabaseInterface::LoadLists, "Loads the masterlist and userlist from the paths specified. Wraps :cpp:func:`LoadLists`.")
     .def("eval_lists", &DatabaseInterface::EvalLists, "Evaluates all conditions and regular expression metadata entries in the loaded metadata lists. Wraps :cpp:func:`EvalLists`.")
     .def("sort_plugins", &DatabaseInterface::SortPlugins, "Calculates a new load order for all a game's installed plugins and outputs the sorted order. Wraps :cpp:func:`SortPlugins`.")
-    .def("apply_load_order", &DatabaseInterface::ApplyLoadOrder, "Applies the given load order. Wraps :cpp:func:`ApplyLoadOrder`.")
     .def("update_masterlist", &DatabaseInterface::UpdateMasterlist, "Updates the given masterlist using the given Git repository details. Wraps :cpp:func:`UpdateMasterlist`.")
     .def("get_masterlist_revision", &DatabaseInterface::GetMasterlistRevision, "Gets the give masterlist's source control revision. Wraps :cpp:func:`GetMasterlistRevision`.")
     .def("get_plugin_tags", &DatabaseInterface::GetPluginTags, "Outputs the Bash Tags suggested for addition and removal by the database for the given plugin. Wraps :cpp:func:`GetPluginTags`.")

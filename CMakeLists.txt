@@ -28,9 +28,9 @@ add_subdirectory(${PYBIND11_EXTRACTED_PATH})
 # LOOT API
 #######################################
 
-set(LOOT_API_URL "https://bintray.com/wrinklyninja/loot/download_file?file_path=loot-api_0.9.2-30-ge40624c_c%2B%2B-api.7z")
-set(LOOT_API_DOWNLOAD_PATH "${EXTERNAL_PROJECTS_PATH}/loot-api_0.9.2-30-ge40624c_c++-api.7z")
-set(LOOT_API_EXTRACTED_PATH "${EXTERNAL_PROJECTS_PATH}/loot-api_0.9.2-30-ge40624c_c++-api")
+set(LOOT_API_URL "https://bintray.com/wrinklyninja/loot/download_file?file_path=loot-api_0.9.2-47-gd1524b8_c%2B%2B-api.7z")
+set(LOOT_API_DOWNLOAD_PATH "${EXTERNAL_PROJECTS_PATH}/loot-api_0.9.2-47-gd1524b8_c++-api.7z")
+set(LOOT_API_EXTRACTED_PATH "${EXTERNAL_PROJECTS_PATH}/loot-api_0.9.2-47-gd1524b8_c++-api")
 
 if (NOT EXISTS ${LOOT_API_DOWNLOAD_PATH})
     file(DOWNLOAD ${LOOT_API_URL} ${LOOT_API_DOWNLOAD_PATH})
