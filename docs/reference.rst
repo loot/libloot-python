@@ -82,11 +82,15 @@ Classes with public fields and no member functions.
 
 .. py:class:: loot_api.Message
 
-  Wraps :cpp:class:`loot::PluginMessage`.
+  Wraps :cpp:class:`loot::SimpleMessage`.
 
   .. py:attribute:: type
 
     A :py:class:`loot_api.MessageType` giving the message type.
+
+  .. py:attribute:: language
+
+    A :py:class:`loot_api.LanguageCode` giving the message text language.
 
   .. py:attribute:: text
 

@@ -38,7 +38,7 @@ PYBIND11_PLUGIN(loot_api) {
   using loot::MessageType;
   using loot::MasterlistInfo;
   using loot::PluginCleanliness;
-  using loot::PluginMessage;
+  using loot::SimpleMessage;
   using loot::PluginTags;
 
   using pybind11::arg;
@@ -85,9 +85,10 @@ PYBIND11_PLUGIN(loot_api) {
     .def_readwrite("revision_date", &MasterlistInfo::revision_date)
     .def_readwrite("is_modified", &MasterlistInfo::is_modified);
 
-  class_<PluginMessage>(module, "Message")
-    .def_readwrite("type", &PluginMessage::type)
-    .def_readwrite("text", &PluginMessage::text);
+  class_<SimpleMessage>(module, "Message")
+    .def_readwrite("type", &SimpleMessage::type)
+    .def_readwrite("language", &SimpleMessage::language)
+    .def_readwrite("text", &SimpleMessage::text);
 
   class_<PluginTags>(module, "PluginTags")
     .def_readwrite("added", &PluginTags::added)

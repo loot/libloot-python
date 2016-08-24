@@ -38,12 +38,12 @@ releases, so snapshot builds created from commits between releases may use the
 last release's version number, and so appear compatible, but contain breaking
 changes that aren't yet reflected by the version numbering.
 
-The module is currently built against revision `d1524b8`_
+The module is currently built against revision `dc3a93e`_
 of the API, which is post-0.9.2 and pre-0.10.0, but uses the v0.10 metadata
 syntax (as specified at that revision, in case there are further changes before
 the v0.10 release).
 
-.. _d1524b8: https://github.com/loot/loot/tree/d1524b83d216efd2744b6575510bb4dbe390c102
+.. _dc3a93e: https://github.com/loot/loot/tree/dc3a93ecf331465b17a28ac39e6c17370438331b
 
 Getting a Plugin's Bash Tag Suggestions
 ***************************************
