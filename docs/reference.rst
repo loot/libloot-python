@@ -131,7 +131,7 @@ Classes
 
   Wraps :cpp:class:`loot::DatabaseInterface`.
 
-  .. py:method:: eval_lists(loot_api.DatabaseInterface, loot_api.LanguageCode) -> NoneType
+  .. py:method:: eval_lists(loot_api.DatabaseInterface) -> NoneType
 
     Evaluates all conditions and regular expression metadata entries in the loaded metadata lists. Wraps :cpp:func:`EvalLists`.
 
@@ -143,7 +143,7 @@ Classes
 
     Determines the database’s knowledge of a plugin’s cleanliness. Wraps :cpp:func:`GetPluginCleanliness`.
 
-  .. py:method:: get_plugin_messages(loot_api.DatabaseInterface, unicode) -> list<loot_api.Message>
+  .. py:method:: get_plugin_messages(loot_api.DatabaseInterface, unicode, loot_api.LanguageCode) -> list<loot_api.Message>
 
     Outputs the messages associated with the given plugin in the database. Wraps :cpp:func:`GetPluginMessages`.
 
