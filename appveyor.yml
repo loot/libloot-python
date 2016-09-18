@@ -15,10 +15,11 @@ build:
   project: 'c:\projects\loot-api-python\build\loot_api_python.sln'
 
 test_script:
-  - cd %APPVEYOR_BUILD_FOLDER%\build
-  - ctest -C Release
+  - cd %APPVEYOR_BUILD_FOLDER%\build\Release
+  - python -m unittest test
 
 after_test:
+  - cd %APPVEYOR_BUILD_FOLDER%\build
   - cpack
   # AppVeyor checks out a specific commit, but that means the archive script
   # can't tell which branch it's on, so rename the 7z archives.

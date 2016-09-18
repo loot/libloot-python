@@ -87,10 +87,6 @@ add_custom_command(TARGET loot_api POST_BUILD
         "${CMAKE_SOURCE_DIR}/src/test.py"
         "$<TARGET_FILE_DIR:loot_api>/test.py")
 
-enable_testing()
-add_test(NAME test
-         COMMAND ${PYTHON_EXECUTABLE} -m unittest test)
-
 ########################################
 # Install
 ########################################
