@@ -190,3 +190,28 @@ Classes
   .. py:staticmethod:: string() -> unicode
 
     Returns the API version as a string of the form ``major.minor.patch``
+
+.. py:class:: loot_api.WrapperVersion
+
+  Provides information about the version of the LOOT API Python wrapper that is
+  being run.
+
+  .. py:attribute:: major
+
+    An unsigned integer giving the major version number.
+
+  .. py:attribute:: minor
+
+    An unsigned integer giving the minor version number.
+
+  .. py:attribute:: patch
+
+    An unsigned integer giving the patch version number.
+
+  .. py:attribute:: revision
+
+    A Unicode string containing the SHA-1 of the Git revision that the wrapped C++ API was built from.
+
+  .. py:staticmethod:: string() -> unicode
+
+    Returns the API version as a string of the form ``major.minor.patch``

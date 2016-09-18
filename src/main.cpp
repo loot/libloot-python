@@ -26,6 +26,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include "wrapper_version.h"
+
 PYBIND11_DECLARE_HOLDER_TYPE(T, std::shared_ptr<T>);
 
 PYBIND11_PLUGIN(loot_api) {
@@ -40,6 +42,7 @@ PYBIND11_PLUGIN(loot_api) {
   using loot::PluginCleanliness;
   using loot::SimpleMessage;
   using loot::PluginTags;
+  using loot::WrapperVersion;
 
   using pybind11::arg;
   using pybind11::enum_;
@@ -101,6 +104,13 @@ PYBIND11_PLUGIN(loot_api) {
     .def_readonly_static("patch", &LootVersion::patch)
     .def_readonly_static("revision", &LootVersion::revision)
     .def("string", LootVersion::string);
+
+  class_<WrapperVersion>(module, "WrapperVersion")
+    .def_readonly_static("major", &WrapperVersion::major)
+    .def_readonly_static("minor", &WrapperVersion::minor)
+    .def_readonly_static("patch", &WrapperVersion::patch)
+    .def_readonly_static("revision", &WrapperVersion::revision)
+    .def("string", WrapperVersion::string);
 
   class_<DatabaseInterface, std::shared_ptr<DatabaseInterface>>(module, "DatabaseInterface")
     .def("load_lists", &DatabaseInterface::LoadLists, arg("masterlist_path"), arg("userlist_path") = emptyString)

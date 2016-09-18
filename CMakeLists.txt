@@ -6,6 +6,26 @@ include(ExternalProject)
 set(EXTERNAL_PROJECTS_PATH "${CMAKE_BINARY_DIR}/external/src")
 make_directory(${EXTERNAL_PROJECTS_PATH})
 
+##############################
+# Get Build Revision
+##############################
+
+find_package(Git)
+
+IF (GIT_FOUND)
+    execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                  OUTPUT_VARIABLE GIT_COMMIT_STRING
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+ELSE()
+    SET (GIT_COMMIT_STRING "unknown")
+ENDIF ()
+
+message(STATUS "Git revision: ${GIT_COMMIT_STRING}")
+
+# Write to file.
+configure_file("${CMAKE_SOURCE_DIR}/src/wrapper_version.cpp.in" "${CMAKE_BINARY_DIR}/generated/wrapper_version.cpp" @ONLY)
+
 #######################################
 # pybind11
 #######################################
@@ -37,7 +57,8 @@ ExternalProject_Add(loot-api-c++
 ExternalProject_Get_Property(loot-api-c++ SOURCE_DIR)
 set(LOOT_API_EXTRACTED_PATH ${SOURCE_DIR})
 
-include_directories("${LOOT_API_EXTRACTED_PATH}/include")
+include_directories("${CMAKE_SOURCE_DIR}/src"
+                    "${LOOT_API_EXTRACTED_PATH}/include")
 link_directories(${LOOT_API_EXTRACTED_PATH})
 set(LOOT_API_STATIC_LIBRARY "${CMAKE_STATIC_LIBRARY_PREFIX}loot_api${CMAKE_STATIC_LIBRARY_SUFFIX}")
 set(LOOT_API_SHARED_LIBRARY "${CMAKE_SHARED_LIBRARY_PREFIX}loot_api${CMAKE_SHARED_LIBRARY_SUFFIX}")
@@ -57,7 +78,7 @@ ExternalProject_Add(test-masterlist
 # Python Module
 #######################################
 
-pybind11_add_module(loot_api "${CMAKE_SOURCE_DIR}/src/main.cpp")
+pybind11_add_module(loot_api "${CMAKE_SOURCE_DIR}/src/main.cpp" "${CMAKE_BINARY_DIR}/generated/wrapper_version.cpp")
 
 add_dependencies(loot_api loot-api-c++ test-masterlist)
 target_link_libraries(loot_api PRIVATE ${LOOT_API_STATIC_LIBRARY})

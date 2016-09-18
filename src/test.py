@@ -5,6 +5,7 @@ import os.path
 import shutil
 import unittest
 from loot_api import Version
+from loot_api import WrapperVersion
 from loot_api import GameType
 from loot_api import LanguageCode
 from loot_api import Message
@@ -35,6 +36,13 @@ class TestLootApi(GameFixture):
         self.assertEqual(Version.minor, 10)
         self.assertEqual(Version.patch, 0)
         self.assertNotEqual(Version.revision, u'')
+
+    def test_wrapper_version(self):
+        self.assertEqual(WrapperVersion.major, 1)
+        self.assertEqual(WrapperVersion.minor, 0)
+        self.assertEqual(WrapperVersion.patch, 0)
+        self.assertNotEqual(WrapperVersion.revision, u'')
+        self.assertNotEqual(WrapperVersion.revision, Version.revision)
 
     def test_create_db(self):
         db = create_database(GameType.tes4, self.game_path, u'')
