@@ -15,6 +15,7 @@ from loot_api import is_compatible
 
 class GameFixture(unittest.TestCase):
     game_path = os.path.join(u'.', u'Oblivion')
+    local_path = os.path.join(u'.', u'local')
 
     def setUp(self):
         data_path = os.path.join(self.game_path, 'Data')
@@ -23,8 +24,11 @@ class GameFixture(unittest.TestCase):
         os.makedirs(data_path)
         open(master_file, 'a').close()
 
+        os.makedirs(self.local_path)
+
     def tearDown(self):
         shutil.rmtree(self.game_path)
+        shutil.rmtree(self.local_path)
 
 class TestLootApi(GameFixture):
     def test_is_compatible(self):
@@ -45,7 +49,7 @@ class TestLootApi(GameFixture):
         self.assertNotEqual(WrapperVersion.revision, Version.revision)
 
     def test_create_db(self):
-        db = create_database(GameType.tes4, self.game_path, u'')
+        db = create_database(GameType.tes4, self.game_path, self.local_path)
         self.assertNotEqual(db, None)
 
 class TestDatabaseInterface(GameFixture):
@@ -54,7 +58,7 @@ class TestDatabaseInterface(GameFixture):
     def setUp(self):
         super(TestDatabaseInterface, self).setUp()
 
-        self.db = create_database(GameType.tes4, self.game_path, u'')
+        self.db = create_database(GameType.tes4, self.game_path, self.local_path)
 
     def test_load_lists(self):
         self.db.load_lists(self.masterlist_path, u'')

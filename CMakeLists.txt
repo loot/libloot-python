@@ -48,9 +48,15 @@ add_subdirectory(${PYBIND11_EXTRACTED_PATH})
 # LOOT API
 #######################################
 
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+    set(LOOT_API_URL "https://bintray.com/wrinklyninja/loot/download_file?file_path=loot-api_0.9.2-74-g6809c39_dev.7z")
+else()
+    set(LOOT_API_URL "https://bintray.com/wrinklyninja/loot/download_file?file_path=loot-api_0.9.2-74-g6809c39_dev.tar.xz")
+endif()
+
 ExternalProject_Add(loot-api-c++
                     PREFIX "external"
-                    URL "https://bintray.com/wrinklyninja/loot/download_file?file_path=loot-api_0.9.2-74-g6809c39_dev.7z"
+                    URL ${LOOT_API_URL}
                     CONFIGURE_COMMAND ""
                     BUILD_COMMAND ""
                     INSTALL_COMMAND "")
@@ -81,7 +87,12 @@ ExternalProject_Add(test-masterlist
 pybind11_add_module(loot_api "${CMAKE_SOURCE_DIR}/src/main.cpp" "${CMAKE_BINARY_DIR}/generated/wrapper_version.cpp")
 
 add_dependencies(loot_api loot-api-c++ test-masterlist)
-target_link_libraries(loot_api PRIVATE ${LOOT_API_STATIC_LIBRARY})
+
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+    target_link_libraries(loot_api PRIVATE ${LOOT_API_STATIC_LIBRARY})
+else()
+    target_link_libraries(loot_api PRIVATE ${LOOT_API_SHARED_LIBRARY})
+endif()
 
 ########################################
 # Testing
@@ -143,7 +154,12 @@ ELSE()
     SET (GIT_DESCRIBE_STRING "unknown-version")
 ENDIF ()
 
-set(CPACK_GENERATOR "7Z")
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+    set(CPACK_GENERATOR "7Z")
+else()
+    set(CPACK_GENERATOR "TXZ")
+endif()
+
 set(CPACK_PACKAGE_VERSION ${GIT_DESCRIBE_STRING})
 set(CPACK_PACKAGE_DIRECTORY "${CMAKE_BINARY_DIR}/package")
 
