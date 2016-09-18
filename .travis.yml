@@ -1,0 +1,49 @@
+sudo: false
+language: cpp
+compiler: gcc
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test           # ppa:ubuntu-toolchain-r/test
+    packages:
+      - gcc-5
+      - g++-5
+      - wget
+
+install:
+  # Use GCC 5.
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+  # Download CMake binary because those available in PPAs either don't support
+  # xz downloads or don't support HTTPS.
+  - wget https://cmake.org/files/v3.6/cmake-3.6.2-Linux-x86_64.tar.gz
+  - tar -xf cmake-3.6.2-Linux-x86_64.tar.gz
+
+before_script:
+  # Move into the cloned LOOT repo build path.
+  - mkdir build && cd build
+  # Link dynamically to the C++ standard library runtime.
+  - ../cmake-3.6.2-Linux-x86_64/bin/cmake ..
+
+script:
+  - make all
+  - python -m unittest test
+
+after_success:
+  # Get the full repo history before trying to run the archiver.
+  - git fetch --unshallow
+  - ../cmake-3.6.2-Linux-x86_64/bin/cpack
+  - cd $TRAVIS_BUILD_DIR
+  # Need to replace the Bintray config files' version placeholders.
+  - VERSION=$(ls build/package/loot_api_python-*.tar.xz | sed 's/build\/package\/loot_api_python-//;s/-Linux.tar.xz//;')
+  - sed -i "s/REPLACE_THIS_VERSION/${VERSION}_${TRAVIS_BRANCH}/" scripts/travis/loot-api.bintray.json
+
+deploy:
+  - provider: bintray
+    file: scripts/travis/loot-api.bintray.json
+    user: wrinklyninja
+    key:
+      secure: "XUj1hk5lNhyzPNs3iv1kw8h370QrS+hOcGvj7fMkMb3KQF+I7XJIIhi5lcVd/X5NB79M4IYKac+7n4fVPsf6jXd+SpKYKdPF5ZnSn00dtU34Jhz+DiZQoLdAVLhGgOTLxv2SE6kfvfCXXVlSSoVOVNH0rx0OWE/BjZaSxd9+XeQgEJ/qozvt9kl4sd02y/M4r9h4SAMGf3zav+PWy+5cigy/LFONDQ9oeCEOJmVbazlB2Hkt0GnRkPpW/jFjUvt5qs0jS1neBBmeVCxvue1qJVJBwPtIszNhoARn/mY1tfQ4b0MdzvYhK1kjHvtBLW+OoXOr5VaiZ2a0J+t7jtgfO2cadiIgqCbxddltq1CESFa3pSCpkAfSg1jkl3Lj7BJzSLrRLxySN+Hq0O4qR3A3cQOVt5glZIbabq0h1b9jxZSpU9D+jwgZxxmI8NZJRS4TegZ+Q1ygY/MrSydUWQ3fK0ls20GePKjPtK90ipqt0HLyjAcLLVshc1jB3MPqDKEPXnQtxrJmbHwZu2rzlngIjUNybJXQxuJLqcE/awijpoftbqxctXzEq2hMj/lp6Y4agX++hikPg+BP6HHCwuwgXTYkcUXC6v5Mm2NTboDnimiJq2aCzcgc4RVjes1o5cKng8xtpYCNoTkEd4Tu1DL+AR6tJnjXkvRsJCdBWUVIFG4="
+    skip_cleanup: true
+    on:
+      all_branches: true
