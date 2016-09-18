@@ -1,34 +1,52 @@
 #!/usr/bin/env python
 
 import cProfile
+import os.path
+import shutil
 import unittest
 from loot_api import Version
 from loot_api import GameType
+from loot_api import LanguageCode
 from loot_api import Message
 from loot_api import MessageType
 from loot_api import create_database
 from loot_api import is_compatible
 
-class TestLootApi(unittest.TestCase):
+class GameFixture(unittest.TestCase):
+    game_path = os.path.join(u'.', u'Oblivion')
+
+    def setUp(self):
+        data_path = os.path.join(self.game_path, 'Data')
+        master_file = os.path.join(data_path, 'Oblivion.esm')
+
+        os.makedirs(data_path)
+        open(master_file, 'a').close()
+
+    def tearDown(self):
+        shutil.rmtree(self.game_path)
+
+class TestLootApi(GameFixture):
     def test_is_compatible(self):
-        self.assertFalse(is_compatible(0, 10, 0))
-        self.assertTrue(is_compatible(0, 9, 2))
+        self.assertFalse(is_compatible(0, 9, 0))
+        self.assertTrue(is_compatible(0, 10, 0))
 
     def test_version(self):
         self.assertEqual(Version.major, 0)
-        self.assertEqual(Version.minor, 9)
-        self.assertEqual(Version.patch, 2)
+        self.assertEqual(Version.minor, 10)
+        self.assertEqual(Version.patch, 0)
         self.assertNotEqual(Version.revision, u'')
 
     def test_create_db(self):
-        db = create_database(GameType.tes4, u'', u'')
+        db = create_database(GameType.tes4, self.game_path, u'')
         self.assertNotEqual(db, None)
 
-class TestDatabaseInterface(unittest.TestCase):
+class TestDatabaseInterface(GameFixture):
     masterlist_path = u'masterlist.yaml'
 
     def setUp(self):
-        self.db = create_database(GameType.tes4, u'', u'')
+        super(TestDatabaseInterface, self).setUp()
+
+        self.db = create_database(GameType.tes4, self.game_path, u'')
 
     def test_load_lists(self):
         self.db.load_lists(self.masterlist_path, u'')
@@ -40,26 +58,26 @@ class TestDatabaseInterface(unittest.TestCase):
         self.assertNotEqual(tags, None)
         self.assertFalse(tags.userlist_modified)
         self.assertEqual(tags.added, set([
-            u'Actors.ACBS', 
-            u'Actors.AIData', 
-            u'Actors.AIPackages', 
-            u'Actors.CombatStyle', 
-            u'Actors.DeathItem', 
-            u'Actors.Stats', 
-            u'C.Climate', 
-            u'C.Light', 
-            u'C.Music', 
-            u'C.Name', 
-            u'C.Owner', 
-            u'Creatures.Blood', 
-            u'Delev', 
-            u'Factions', 
-            u'Invent', 
-            u'Names', 
-            u'NPC.Class', 
-            u'Relations', 
-            u'Relev', 
-            u'Scripts', 
+            u'Actors.ACBS',
+            u'Actors.AIData',
+            u'Actors.AIPackages',
+            u'Actors.CombatStyle',
+            u'Actors.DeathItem',
+            u'Actors.Stats',
+            u'C.Climate',
+            u'C.Light',
+            u'C.Music',
+            u'C.Name',
+            u'C.Owner',
+            u'Creatures.Blood',
+            u'Delev',
+            u'Factions',
+            u'Invent',
+            u'Names',
+            u'NPC.Class',
+            u'Relations',
+            u'Relev',
+            u'Scripts',
             u'Stats'
         ]))
         self.assertEqual(tags.removed, set([u'C.Water']))
@@ -75,7 +93,7 @@ class TestDatabaseInterface(unittest.TestCase):
     def test_get_plugin_messages(self):
         self.db.load_lists(self.masterlist_path, u'')
 
-        messages = self.db.get_plugin_messages(u'Oblivion.esm')
+        messages = self.db.get_plugin_messages(u'Oblivion.esm', LanguageCode.english)
 
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0].type, MessageType.error)

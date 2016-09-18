@@ -28,22 +28,10 @@ To check if the module loaded is compatible with the version of the API that you
 developed against::
 
   >>> import loot_api
-  >>> loot_api.is_compatible(0,9,0)
+  >>> loot_api.is_compatible(0,10,0)
   True
-  >>> loot_api.is_compatible(0,8,0)
+  >>> loot_api.is_compatible(0,9,0)
   False
-
-**Note:** LOOT's development cycle increments its version number just before
-releases, so snapshot builds created from commits between releases may use the
-last release's version number, and so appear compatible, but contain breaking
-changes that aren't yet reflected by the version numbering.
-
-The module is currently built against revision `dc3a93e`_
-of the API, which is post-0.9.2 and pre-0.10.0, but uses the v0.10 metadata
-syntax (as specified at that revision, in case there are further changes before
-the v0.10 release).
-
-.. _dc3a93e: https://github.com/loot/loot/tree/dc3a93ecf331465b17a28ac39e6c17370438331b
 
 Getting a Plugin's Bash Tag Suggestions
 ***************************************
