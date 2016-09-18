@@ -28,17 +28,14 @@ add_subdirectory(${PYBIND11_EXTRACTED_PATH})
 # LOOT API
 #######################################
 
-set(LOOT_API_URL "https://bintray.com/wrinklyninja/loot/download_file?file_path=loot-api_0.9.2-49-g6809c39_dev.7z")
-set(LOOT_API_DOWNLOAD_PATH "${EXTERNAL_PROJECTS_PATH}/loot-api_0.9.2-49-g6809c39_dev.7z")
-set(LOOT_API_EXTRACTED_PATH "${EXTERNAL_PROJECTS_PATH}/loot-api_0.9.2-49-g6809c39_dev")
-
-if (NOT EXISTS ${LOOT_API_DOWNLOAD_PATH})
-    file(DOWNLOAD ${LOOT_API_URL} ${LOOT_API_DOWNLOAD_PATH})
-endif()
-
-execute_process(COMMAND ${CMAKE_COMMAND} -E tar -xfJ ${LOOT_API_DOWNLOAD_PATH}
-  WORKING_DIRECTORY ${EXTERNAL_PROJECTS_PATH}
-  RESULT_VARIABLE result)
+ExternalProject_Add(loot-api-c++
+                    PREFIX "external"
+                    URL "https://bintray.com/wrinklyninja/loot/download_file?file_path=loot-api_0.9.2-74-g6809c39_dev.7z"
+                    CONFIGURE_COMMAND ""
+                    BUILD_COMMAND ""
+                    INSTALL_COMMAND "")
+ExternalProject_Get_Property(loot-api-c++ SOURCE_DIR)
+set(LOOT_API_EXTRACTED_PATH ${SOURCE_DIR})
 
 include_directories("${LOOT_API_EXTRACTED_PATH}/include")
 link_directories(${LOOT_API_EXTRACTED_PATH})
@@ -49,17 +46,12 @@ set(LOOT_API_SHARED_LIBRARY "${CMAKE_SHARED_LIBRARY_PREFIX}loot_api${CMAKE_SHARE
 # Test Masterlist
 #######################################
 
-set(MASTERLIST_URL "https://github.com/loot/oblivion/archive/059fde4e976b70ec6bfcc583f1dcdc18aa598651.zip")
-set(MASTERLIST_DOWNLOAD_PATH "${EXTERNAL_PROJECTS_PATH}/oblivion-059fde4e976b70ec6bfcc583f1dcdc18aa598651.zip")
-set(MASTERLIST_EXTRACTED_PATH "${EXTERNAL_PROJECTS_PATH}/oblivion-059fde4e976b70ec6bfcc583f1dcdc18aa598651")
-
-if (NOT EXISTS ${MASTERLIST_DOWNLOAD_PATH})
-    file(DOWNLOAD ${MASTERLIST_URL} ${MASTERLIST_DOWNLOAD_PATH})
-endif()
-
-execute_process(COMMAND ${CMAKE_COMMAND} -E tar xfz ${MASTERLIST_DOWNLOAD_PATH}
-  WORKING_DIRECTORY ${EXTERNAL_PROJECTS_PATH}
-  RESULT_VARIABLE result)
+ExternalProject_Add(test-masterlist
+                    PREFIX "external"
+                    URL "https://github.com/loot/oblivion/archive/059fde4e976b70ec6bfcc583f1dcdc18aa598651.zip"
+                    CONFIGURE_COMMAND ""
+                    BUILD_COMMAND ""
+                    INSTALL_COMMAND "")
 
 #######################################
 # Python Module
@@ -67,6 +59,7 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E tar xfz ${MASTERLIST_DOWNLOAD_PATH}
 
 pybind11_add_module(loot_api "${CMAKE_SOURCE_DIR}/src/main.cpp")
 
+add_dependencies(loot_api loot-api-c++ test-masterlist)
 target_link_libraries(loot_api PRIVATE ${LOOT_API_STATIC_LIBRARY})
 
 ########################################
@@ -82,9 +75,10 @@ add_custom_command(TARGET loot_api POST_BUILD
         "$<TARGET_FILE_DIR:loot_api>/${LOOT_API_SHARED_LIBRARY}")
 
 # Copy the test masterlist to the build directory.
+ExternalProject_Get_Property(test-masterlist SOURCE_DIR)
 add_custom_command(TARGET loot_api POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${MASTERLIST_EXTRACTED_PATH}/masterlist.yaml"
+        "${SOURCE_DIR}/masterlist.yaml"
         "$<TARGET_FILE_DIR:loot_api>/masterlist.yaml")
 
 # Also copy the test Python script to the build directory.
