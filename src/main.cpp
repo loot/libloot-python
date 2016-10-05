@@ -103,14 +103,14 @@ PYBIND11_PLUGIN(loot_api) {
     .def_readonly_static("minor", &LootVersion::minor)
     .def_readonly_static("patch", &LootVersion::patch)
     .def_readonly_static("revision", &LootVersion::revision)
-    .def("string", LootVersion::string);
+    .def_static("string", LootVersion::string);
 
   class_<WrapperVersion>(module, "WrapperVersion")
     .def_readonly_static("major", &WrapperVersion::major)
     .def_readonly_static("minor", &WrapperVersion::minor)
     .def_readonly_static("patch", &WrapperVersion::patch)
     .def_readonly_static("revision", &WrapperVersion::revision)
-    .def("string", WrapperVersion::string);
+    .def_static("string", WrapperVersion::string);
 
   class_<DatabaseInterface, std::shared_ptr<DatabaseInterface>>(module, "DatabaseInterface")
     .def("load_lists", &DatabaseInterface::LoadLists, arg("masterlist_path"), arg("userlist_path") = emptyString)
