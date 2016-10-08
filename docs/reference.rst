@@ -108,7 +108,7 @@ Classes with public fields and no member functions.
 
     A set of Unicode strings giving Bash Tags suggested for removal.
 
-  .. py:attribute:: is_modified
+  .. py:attribute:: userlist_modified
 
     A boolean that is true if the suggestions contain metadata obtained from a loaded userlist.
 
