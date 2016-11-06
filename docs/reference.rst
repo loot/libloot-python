@@ -22,6 +22,7 @@ values are unsigned integer constants.
   .. py:attribute:: fonv
   .. py:attribute:: tes4
   .. py:attribute:: tes5
+  .. py:attribute:: tes5se
 
 .. py:class:: loot_api.LanguageCode
 

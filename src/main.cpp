@@ -55,6 +55,7 @@ PYBIND11_PLUGIN(loot_api) {
   enum_<GameType>(module, "GameType")
     .value("tes4", GameType::tes4)
     .value("tes5", GameType::tes5)
+    .value("tes5se", GameType::tes5se)
     .value("fo3", GameType::fo3)
     .value("fonv", GameType::fonv)
     .value("fo4", GameType::fo4);
