@@ -346,5 +346,5 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    'loot_api': ('http://loot.readthedocs.io/en/c---api/', None),
+    'loot_api': ('http://loot.readthedocs.io/en/0.10.0/', None),
 }

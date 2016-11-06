@@ -49,9 +49,9 @@ add_subdirectory(${PYBIND11_EXTRACTED_PATH})
 #######################################
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set(LOOT_API_URL "https://bintray.com/wrinklyninja/loot/download_file?file_path=loot-api_0.9.2-74-g6809c39_dev.7z")
+    set(LOOT_API_URL "https://bintray.com/wrinklyninja/loot/download_file?file_path=loot-api_0.10.0-0-g7b97241_dev.7z")
 else()
-    set(LOOT_API_URL "https://bintray.com/wrinklyninja/loot/download_file?file_path=loot-api_0.9.2-74-g6809c39_dev.tar.xz")
+    set(LOOT_API_URL "https://bintray.com/wrinklyninja/loot/download_file?file_path=loot-api_0.10.0-0-g7b97241_0.10.0.tar.xz")
 endif()
 
 ExternalProject_Add(loot-api-c++
@@ -75,7 +75,7 @@ set(LOOT_API_SHARED_LIBRARY "${CMAKE_SHARED_LIBRARY_PREFIX}loot_api${CMAKE_SHARE
 
 ExternalProject_Add(test-masterlist
                     PREFIX "external"
-                    URL "https://github.com/loot/oblivion/archive/059fde4e976b70ec6bfcc583f1dcdc18aa598651.zip"
+                    URL "https://github.com/loot/oblivion/archive/09286601739c11a3a3e4552c6ddbdcaeffd1a8d3.zip"
                     CONFIGURE_COMMAND ""
                     BUILD_COMMAND ""
                     INSTALL_COMMAND "")
