@@ -49,9 +49,9 @@ add_subdirectory(${PYBIND11_EXTRACTED_PATH})
 #######################################
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set(LOOT_API_URL "https://bintray.com/wrinklyninja/loot/download_file?file_path=loot-api_0.10.0-0-g7b97241_dev.7z")
+    set(LOOT_API_URL "https://bintray.com/wrinklyninja/loot/download_file?file_path=loot-api_0.10.1-0-gd8f8dc4_master.7z")
 else()
-    set(LOOT_API_URL "https://bintray.com/wrinklyninja/loot/download_file?file_path=loot-api_0.10.0-0-g7b97241_0.10.0.tar.xz")
+    set(LOOT_API_URL "https://bintray.com/wrinklyninja/loot/download_file?file_path=loot-api_0.10.1-0-gd8f8dc4_master.tar.xz")
 endif()
 
 ExternalProject_Add(loot-api-c++
