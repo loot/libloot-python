@@ -36,7 +36,7 @@ after_success:
   - cd $TRAVIS_BUILD_DIR
   # Need to replace the Bintray config files' version placeholders.
   - VERSION=$(ls build/package/loot_api_python-*.tar.xz | sed 's/build\/package\/loot_api_python-//;s/-Linux.tar.xz//;')
-  - sed -i "s/REPLACE_THIS_VERSION/${VERSION}_${TRAVIS_BRANCH}/" scripts/travis/loot-api.bintray.json
+  - sed -i "s/REPLACE_THIS_VERSION/${VERSION}/" scripts/travis/loot-api.bintray.json
 
 deploy:
   - provider: bintray
