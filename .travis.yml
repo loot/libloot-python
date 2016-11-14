@@ -30,9 +30,7 @@ script:
   - python -m unittest test
 
 after_success:
-  # Get the full repo history before trying to run the archiver.
-  - git fetch --unshallow
-  - ../cmake-3.6.2-Linux-x86_64/bin/cpack
+  - ../cmake-3.6.2-Linux-x86_64/bin/cpack -C Release
   - cd $TRAVIS_BUILD_DIR
   # Need to replace the Bintray config files' version placeholders.
   - VERSION=$(ls build/package/loot_api_python-*.tar.xz | sed 's/build\/package\/loot_api_python-//;s/-Linux.tar.xz//;')
