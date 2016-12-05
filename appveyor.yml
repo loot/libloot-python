@@ -33,7 +33,7 @@ deploy:
   - provider: BinTray
     username: wrinklyninja
     api_key:
-      secure: u234T2688DZmz4JH5+0iAHcUcL2fEIGculb8655bn4B1q7GckhplsitzgEbv3NFc
+      secure: fBQJmUDK/EgEUWjjbo6bWcitczeFTJZT4OZ3ZZ4FoUT6soBsTWPQJnr8YEVMFhGP
     subject: wrinklyninja
     repo: loot
     package: loot-api-python
