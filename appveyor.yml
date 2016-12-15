@@ -48,5 +48,17 @@ deploy:
     publish: true
     artifact: loot_api_python
 
+  - provider: GitHub
+    tag: $(APPVEYOR_REPO_TAG_NAME)
+    release: LOOT API Python Module v$(APPVEYOR_REPO_TAG_NAME)
+    description: |
+      Requires Windows 7 or later and the [MSVC 2015 x86 redistributable](https://download.microsoft.com/download/6/A/A/6AA4EDFF-645B-48C5-81CC-ED5963AEAD48/vc_redist.x86.exe), and [7-Zip](http://www.7-zip.org/) to extract the archive.
+    auth_token:
+      secure: V1GojGQfrAiQtUWtNNXfm3samiH+1yNF5UYhkn8B8mbif20IGTGWNlBS9E4S0SUC
+    artifact: loot_api_python
+    draft: false
+    on:
+      appveyor_repo_tag: true
+
 on_success:
   - ps: python "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py" -o loot -g loot-api-python -u wrinklyninja -b loot -p loot-api-python -t $env:bintray_auth_token -n 30
