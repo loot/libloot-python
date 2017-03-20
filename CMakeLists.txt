@@ -30,9 +30,9 @@ configure_file("${CMAKE_SOURCE_DIR}/src/wrapper_version.cpp.in" "${CMAKE_BINARY_
 # pybind11
 #######################################
 
-set(PYBIND11_URL "https://github.com/pybind/pybind11/archive/v1.8.1.tar.gz")
-set(PYBIND11_DOWNLOAD_PATH "${EXTERNAL_PROJECTS_PATH}/pybind11-1.8.1.tar.gz")
-set(PYBIND11_EXTRACTED_PATH "${EXTERNAL_PROJECTS_PATH}/pybind11-1.8.1")
+set(PYBIND11_URL "https://github.com/pybind/pybind11/archive/v2.1.1.tar.gz")
+set(PYBIND11_DOWNLOAD_PATH "${EXTERNAL_PROJECTS_PATH}/pybind11-2.1.1.tar.gz")
+set(PYBIND11_EXTRACTED_PATH "${EXTERNAL_PROJECTS_PATH}/pybind11-2.1.1")
 
 if (NOT EXISTS ${PYBIND11_DOWNLOAD_PATH})
     file(DOWNLOAD ${PYBIND11_URL} ${PYBIND11_DOWNLOAD_PATH})
