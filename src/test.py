@@ -7,11 +7,16 @@ import unittest
 from loot_api import Version
 from loot_api import WrapperVersion
 from loot_api import GameType
-from loot_api import LanguageCode
-from loot_api import Message
+from loot_api import LogVerbosity
+from loot_api import SimpleMessage
 from loot_api import MessageType
 from loot_api import create_database
 from loot_api import is_compatible
+from loot_api import set_logging_verbosity
+from loot_api import initialise_locale
+
+set_logging_verbosity(LogVerbosity.off)
+initialise_locale("")
 
 class GameFixture(unittest.TestCase):
     game_path = os.path.join(u'.', u'Oblivion')
@@ -33,14 +38,14 @@ class GameFixture(unittest.TestCase):
 class TestLootApi(GameFixture):
     def test_is_compatible(self):
         self.assertFalse(is_compatible(0, 9, 0))
-        self.assertTrue(is_compatible(0, 10, 0))
+        self.assertTrue(is_compatible(0, 11, 0))
 
     def test_version(self):
         self.assertEqual(Version.major, 0)
-        self.assertEqual(Version.minor, 10)
-        self.assertEqual(Version.patch, 2)
+        self.assertEqual(Version.minor, 11)
+        self.assertEqual(Version.patch, 0)
         self.assertNotEqual(Version.revision, u'')
-        self.assertEqual(Version.string(), "0.10.2")
+        self.assertEqual(Version.string(), "0.11.0")
 
     def test_wrapper_version(self):
         self.assertEqual(WrapperVersion.major, 1)
@@ -96,18 +101,10 @@ class TestDatabaseInterface(GameFixture):
         ]))
         self.assertEqual(tags.removed, set([u'C.Water']))
 
-#        cProfile.runctx('self.test_get_plugin_tags_performance()', globals(), locals(), sort='cumtime')
-
-#    def test_get_plugin_tags_performance(self):
-#        self.db.load_lists(self.masterlist_path, u'')
-#
-#        for i in xrange(200000):
-#            tags = self.db.get_plugin_tags(u'Unofficial Oblivion Patch.esp')
-
     def test_get_plugin_messages(self):
         self.db.load_lists(self.masterlist_path, u'')
 
-        messages = self.db.get_plugin_messages(u'Oblivion.esm', LanguageCode.english)
+        messages = self.db.get_plugin_metadata(u'Oblivion.esm').get_simple_messages(u'en')
 
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0].type, MessageType.error)

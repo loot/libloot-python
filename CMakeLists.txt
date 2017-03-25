@@ -51,7 +51,7 @@ add_subdirectory(${PYBIND11_EXTRACTED_PATH})
 
 ExternalProject_Add(loot-api-c++
                     PREFIX "external"
-                    URL "https://github.com/loot/loot/releases/download/0.10.2/loot-api_0.10.2-0-g9eb7d26_dev.7z"
+                    URL "https://github.com/loot/loot-api/releases/download/0.11.0/loot_api-0.11.0-0-g8864f78_dev-win32.7z"
                     CONFIGURE_COMMAND ""
                     BUILD_COMMAND ""
                     INSTALL_COMMAND "")
@@ -79,7 +79,9 @@ ExternalProject_Add(test-masterlist
 # Python Module
 #######################################
 
-pybind11_add_module(loot_api "${CMAKE_SOURCE_DIR}/src/main.cpp" "${CMAKE_BINARY_DIR}/generated/wrapper_version.cpp")
+pybind11_add_module(loot_api  "${CMAKE_SOURCE_DIR}/src/main.cpp"
+                              "${CMAKE_SOURCE_DIR}/src/convenience.cpp"
+                              "${CMAKE_BINARY_DIR}/generated/wrapper_version.cpp")
 
 add_dependencies(loot_api loot-api-c++ test-masterlist)
 
