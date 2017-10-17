@@ -32,10 +32,10 @@ std::shared_ptr<DatabaseInterface> CreateDatabase(const GameType game, const std
 
   return gameHandle->GetDatabase();
 }
-PluginTags GetPluginTags(const std::shared_ptr<DatabaseInterface> db, const std::string& plugin) {
+PluginTags GetPluginTags(const std::shared_ptr<DatabaseInterface> db, const std::string& plugin, bool evaluateConditions) {
   PluginTags tags;
 
-  auto metadata = db->GetPluginMetadata(plugin, false, false);
+  auto metadata = db->GetPluginMetadata(plugin, false, evaluateConditions);
   for (const auto &tag : metadata.GetTags()) {
     if (tag.IsAddition())
       tags.added.insert(tag.GetName());
@@ -43,7 +43,7 @@ PluginTags GetPluginTags(const std::shared_ptr<DatabaseInterface> db, const std:
       tags.removed.insert(tag.GetName());
   }
 
-  metadata = db->GetPluginUserMetadata(plugin, false);
+  metadata = db->GetPluginUserMetadata(plugin, evaluateConditions);
   tags.userlist_modified = !metadata.GetTags().empty();
   for (const auto &tag : metadata.GetTags()) {
     if (tag.IsAddition())
@@ -55,8 +55,8 @@ PluginTags GetPluginTags(const std::shared_ptr<DatabaseInterface> db, const std:
   return tags;
 }
 
-PluginCleanliness GetPluginCleanliness(const std::shared_ptr<DatabaseInterface> db, const std::string& plugin) {
-  auto metadata = db->GetPluginMetadata(plugin, true, false);
+PluginCleanliness GetPluginCleanliness(const std::shared_ptr<DatabaseInterface> db, const std::string& plugin, bool evaluateConditions) {
+  auto metadata = db->GetPluginMetadata(plugin, true, evaluateConditions);
 
   if (metadata.GetDirtyInfo().empty()) {
     if (metadata.GetCleanInfo().empty()) {

@@ -25,6 +25,7 @@
 #include <loot/api.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <pybind11/functional.h>
 
 #include "convenience.h"
 #include "wrapper_version.h"
@@ -44,10 +45,13 @@ void bindEnums(pybind11::module& module) {
     .value("fonv", GameType::fonv)
     .value("fo4", GameType::fo4);
 
-  enum_<LogVerbosity>(module, "LogVerbosity")
-    .value("off", LogVerbosity::off)
-    .value("trace", LogVerbosity::trace)
-    .value("warning", LogVerbosity::warning);
+  enum_<LogLevel>(module, "LogLevel")
+    .value("trace", LogLevel::trace)
+    .value("debug", LogLevel::debug)
+    .value("info", LogLevel::info)
+    .value("warning", LogLevel::warning)
+    .value("error", LogLevel::error)
+    .value("fatal", LogLevel::fatal);
 
   enum_<MessageType>(module, "MessageType")
     .value("say", MessageType::say)
@@ -70,7 +74,8 @@ void bindMetadataClasses(pybind11::module& module) {
   class_<SimpleMessage>(module, "SimpleMessage")
     .def_readwrite("type", &SimpleMessage::type)
     .def_readwrite("language", &SimpleMessage::language)
-    .def_readwrite("text", &SimpleMessage::text);
+    .def_readwrite("text", &SimpleMessage::text)
+    .def_readwrite("condition", &SimpleMessage::condition);
 
   class_<PluginTags>(module, "PluginTags")
     .def_readwrite("added", &PluginTags::added)
@@ -100,15 +105,18 @@ void bindVersionClasses(pybind11::module& module) {
 void bindInterfaceClasses(pybind11::module& module) {
   class_<DatabaseInterface, std::shared_ptr<DatabaseInterface>>(module, "DatabaseInterface")
     .def("load_lists", &DatabaseInterface::LoadLists, arg("masterlist_path"), arg("userlist_path") = "")
-    .def("eval_lists", &DatabaseInterface::EvalLists)
     .def("update_masterlist", &DatabaseInterface::UpdateMasterlist)
     .def("get_masterlist_revision", &DatabaseInterface::GetMasterlistRevision)
     .def("get_plugin_metadata", &DatabaseInterface::GetPluginMetadata,
-         arg("plugin"),
-         arg("includeUserMetadata") = true,
-         arg("evaluateConditions") = false)
-    .def("get_plugin_tags", &GetPluginTags)
-    .def("get_plugin_cleanliness", &GetPluginCleanliness)
+      arg("plugin"),
+      arg("includeUserMetadata") = true,
+      arg("evaluateConditions") = false)
+    .def("get_plugin_tags", &GetPluginTags,
+      arg("plugin"),
+      arg("evaluateConditions") = false)
+    .def("get_plugin_cleanliness", &GetPluginCleanliness,
+      arg("plugin"),
+      arg("evaluateConditions") = false)
     .def("write_minimal_list", &DatabaseInterface::WriteMinimalList);
 }
 
@@ -119,9 +127,7 @@ void bindClasses(pybind11::module& module) {
 }
 
 void bindFunctions(pybind11::module& module) {
-  module.def("set_logging_verbosity", &SetLoggingVerbosity);
-
-  module.def("set_log_file", &SetLogFile);
+  module.def("set_logging_callback", &SetLoggingCallback);
 
   module.def("is_compatible", &IsCompatible);
 

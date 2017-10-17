@@ -7,15 +7,17 @@ import unittest
 from loot_api import Version
 from loot_api import WrapperVersion
 from loot_api import GameType
-from loot_api import LogVerbosity
 from loot_api import SimpleMessage
 from loot_api import MessageType
 from loot_api import create_database
 from loot_api import is_compatible
-from loot_api import set_logging_verbosity
+from loot_api import set_logging_callback
 from loot_api import initialise_locale
 
-set_logging_verbosity(LogVerbosity.off)
+def logging_callback(level, message):
+    pass
+
+set_logging_callback(logging_callback)
 initialise_locale("")
 
 class GameFixture(unittest.TestCase):
@@ -38,14 +40,14 @@ class GameFixture(unittest.TestCase):
 class TestLootApi(GameFixture):
     def test_is_compatible(self):
         self.assertFalse(is_compatible(0, 9, 0))
-        self.assertTrue(is_compatible(0, 11, 0))
+        self.assertTrue(is_compatible(0, 12, 0))
 
     def test_version(self):
         self.assertEqual(Version.major, 0)
-        self.assertEqual(Version.minor, 11)
-        self.assertEqual(Version.patch, 1)
+        self.assertEqual(Version.minor, 12)
+        self.assertEqual(Version.patch, 0)
         self.assertNotEqual(Version.revision, u'')
-        self.assertEqual(Version.string(), "0.11.1")
+        self.assertEqual(Version.string(), "0.12.0")
 
     def test_wrapper_version(self):
         self.assertEqual(WrapperVersion.major, 2)

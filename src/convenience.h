@@ -38,9 +38,13 @@ std::shared_ptr<DatabaseInterface> CreateDatabase(const GameType game,
                                                   const std::string& game_path = "",
                                                   const std::string& game_local_path = "");
 
-PluginTags GetPluginTags(const std::shared_ptr<DatabaseInterface> db, const std::string& plugin);
+PluginTags GetPluginTags(const std::shared_ptr<DatabaseInterface> db,
+                         const std::string& plugin,
+                         bool evaluateConditions = false);
 
-PluginCleanliness GetPluginCleanliness(const std::shared_ptr<DatabaseInterface> db, const std::string& plugin);
+PluginCleanliness GetPluginCleanliness(const std::shared_ptr<DatabaseInterface> db,
+                                       const std::string& plugin,
+                                       bool evaluateConditions = false);
 }
 
 #endif
