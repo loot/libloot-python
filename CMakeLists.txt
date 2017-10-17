@@ -48,10 +48,15 @@ add_subdirectory(${PYBIND11_EXTRACTED_PATH})
 # LOOT API
 #######################################
 
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+    set(LOOT_API_URL "https://github.com/loot/loot-api/releases/download/0.11.1/loot_api-0.11.1-0-g021a253_dev-win32.7z")
+else()
+    set(LOOT_API_URL "https://github.com/loot/loot-api/releases/download/0.11.1/loot-api.tar.xz")
+endif()
 
 ExternalProject_Add(loot-api-c++
                     PREFIX "external"
-                    URL "https://github.com/loot/loot-api/releases/download/0.11.0/loot_api-0.11.0-0-g8864f78_dev-win32.7z"
+                    URL ${LOOT_API_URL}
                     CONFIGURE_COMMAND ""
                     BUILD_COMMAND ""
                     INSTALL_COMMAND "")

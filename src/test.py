@@ -43,9 +43,9 @@ class TestLootApi(GameFixture):
     def test_version(self):
         self.assertEqual(Version.major, 0)
         self.assertEqual(Version.minor, 11)
-        self.assertEqual(Version.patch, 0)
+        self.assertEqual(Version.patch, 1)
         self.assertNotEqual(Version.revision, u'')
-        self.assertEqual(Version.string(), "0.11.0")
+        self.assertEqual(Version.string(), "0.11.1")
 
     def test_wrapper_version(self):
         self.assertEqual(WrapperVersion.major, 2)
