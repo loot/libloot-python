@@ -14,8 +14,7 @@ values are unsigned integer constants.
 
 .. py:class:: loot_api.GameType
 
-  Wraps :cpp:type:`loot::GameType` to expose the LOOT API's game
-  codes.
+  Wraps :cpp:type:`loot::GameType` to expose the LOOT API's game codes.
 
   .. py:attribute:: fo3
   .. py:attribute:: fo4
@@ -24,27 +23,21 @@ values are unsigned integer constants.
   .. py:attribute:: tes5
   .. py:attribute:: tes5se
 
-.. py:class:: loot_api.LanguageCode
+.. py:class:: loot_api.LogLevel
 
-  Wraps :cpp:type:`loot::LanguageCode` to expose the LOOT API's
-  language codes.
+  Wraps :cpp:type:`loot::LogLevel` to expose the LOOT API's log level codes.
 
-  .. py:attribute:: english
-  .. py:attribute:: spanish
-  .. py:attribute:: russian
-  .. py:attribute:: french
-  .. py:attribute:: chinese
-  .. py:attribute:: polish
-  .. py:attribute:: brazilian_portuguese
-  .. py:attribute:: finnish
-  .. py:attribute:: german
-  .. py:attribute:: danish
-  .. py:attribute:: korean
+  .. py:attribute:: trace
+  .. py:attribute:: debug
+  .. py:attribute:: info
+  .. py:attribute:: warning
+  .. py:attribute:: error
+  .. py:attribute:: fatal
 
 .. py:class:: loot_api.MessageType
 
-  Wraps :cpp:type:`loot::MessageType` to expose the LOOT API's
-  message type codes.
+  Wraps :cpp:type:`loot::MessageType` to expose the LOOT API's message type
+  codes.
 
   .. py:attribute:: error
   .. py:attribute:: say
@@ -52,12 +45,25 @@ values are unsigned integer constants.
 
 .. py:class:: loot_api.PluginCleanliness
 
-  Wraps :cpp:type:`loot::PluginCleanliness` to expose the LOOT API's plugin cleanliness state codes.
+  Codes used to indicate the cleanliness of a plugin according to the
+  information contained within the loaded masterlist/userlist.
 
   .. py:attribute:: clean
+
+    Indicates that the plugin is clean.
+
   .. py:attribute:: dirty
+
+    Indicates that the plugin is dirty.
+
   .. py:attribute:: do_not_clean
+
+    Indicates that the plugin contains dirty edits, but that they are part of
+    the plugin’s intended functionality and should not be removed.
+
   .. py:attribute:: unknown
+
+    Indicates that no data is available on whether the plugin is dirty or not.
 
 Public-Field Data Structures
 ============================
@@ -81,7 +87,7 @@ Classes with public fields and no member functions.
     A boolean that is true if the masterlist has been modified from its state
     at the commit given by :py:attr:`revision_id`.
 
-.. py:class:: loot_api.Message
+.. py:class:: loot_api.SimpleMessage
 
   Wraps :cpp:class:`loot::SimpleMessage`.
 
@@ -91,11 +97,15 @@ Classes with public fields and no member functions.
 
   .. py:attribute:: language
 
-    A :py:class:`loot_api.LanguageCode` giving the message text language.
+    A Unicode string giving the message text language.
 
   .. py:attribute:: text
 
     A Unicode string containing the message text.
+
+  .. py:attribute:: condition
+
+    A Unicode string containing the message condition.
 
 .. py:class:: loot_api.PluginTags
 
@@ -117,13 +127,23 @@ Classes with public fields and no member functions.
 Functions
 =========
 
+.. py:function:: loot_api.set_logging_callback(callback) -> NoneType
+
+  Set the callback function that is called when logging. Wraps
+  :cpp:func:`loot::SetLoggingCallback`.
+
 .. py:function:: loot_api.is_compatible(int, int, int) -> bool
 
   Checks for API compatibility. Wraps :cpp:func:`loot::IsCompatible`.
 
+.. py:function:: loot_api.InitialiseLocale(unicode) -> NoneType
+
+  Initialise the current global locale using the given ID. Wraps
+  :cpp:func:`loot::InitialiseLocale`.
+
 .. py:function:: loot_api.create_database(game : loot_api.GameType, [game_path : unicode = u'', [game_local_path : unicode = u'']]) -> loot_api.DatabaseInterface
 
-  Initialise a new database handle. Wraps :cpp:func:`loot::IsCompatible`.
+  Initialise a new database handle. Wraps :cpp:func:`loot::CreateDatabase`.
 
 Classes
 =======
@@ -132,33 +152,25 @@ Classes
 
   Wraps :cpp:class:`loot::DatabaseInterface`.
 
-  .. py:method:: eval_lists(loot_api.DatabaseInterface) -> NoneType
-
-    Evaluates all conditions and regular expression metadata entries in the loaded metadata lists. Wraps :cpp:func:`EvalLists`.
-
   .. py:method:: get_masterlist_revision(loot_api.DatabaseInterface, unicode, bool) -> loot_api.MasterlistInfo
 
     Gets the give masterlist’s source control revision. Wraps :cpp:func:`GetMasterlistRevision`.
 
-  .. py:method:: get_plugin_cleanliness(loot_api.DatabaseInterface, unicode) -> loot_api.PluginCleanliness
+  .. py:method:: get_plugin_metadata(loot_api.DatabaseInterface, plugin : unicode, [includeUserMetadata : bool = True, [evaluateConditions : bool = False]]) -> loot_api.PluginMetadata
 
-    Determines the database’s knowledge of a plugin’s cleanliness. Wraps :cpp:func:`GetPluginCleanliness`.
+    Get all a plugin’s loaded metadata. Wraps :cpp:func:`GetPluginMetadata`.
 
-  .. py:method:: get_plugin_messages(loot_api.DatabaseInterface, unicode, loot_api.LanguageCode) -> list<loot_api.Message>
+  .. py:method:: get_plugin_cleanliness(loot_api.DatabaseInterface, plugin : unicode, [evaluateConditions : bool = False]) -> loot_api.PluginCleanliness
 
-    Outputs the messages associated with the given plugin in the database. Wraps :cpp:func:`GetPluginMessages`.
+    Determines the database’s knowledge of a plugin’s cleanliness. Outputs whether the plugin should be cleaned or not, or if no data is available.
 
-  .. py:method:: get_plugin_tags(loot_api.DatabaseInterface, unicode) -> loot_api.PluginTags
+  .. py:method:: get_plugin_tags(loot_api.DatabaseInterface, plugin : unicode, [evaluateConditions : bool = False]) -> loot_api.PluginTags
 
-    Outputs the Bash Tags suggested for addition and removal by the database for the given plugin. Wraps :cpp:func:`GetPluginTags`.
+    Outputs the Bash Tags suggested for addition and removal by the database for the given plugin.
 
   .. py:method:: load_lists(loot_api.DatabaseInterface, masterlist_path : unicode, [userlist_path : unicode = u'']) -> NoneType
 
     Loads the masterlist and userlist from the paths specified. Wraps :cpp:func:`LoadLists`.
-
-  .. py:method:: sort_plugins(loot_api.DatabaseInterface, list<unicode>) -> list<unicode>
-
-    Calculates a new load order for all a game’s installed plugins and outputs the sorted order. Wraps :cpp:func:`SortPlugins`.
 
   .. py:method:: update_masterlist(loot_api.DatabaseInterface, unicode, unicode, unicode) -> bool
 
@@ -216,3 +228,12 @@ Classes
   .. py:staticmethod:: string() -> unicode
 
     Returns the API version as a string of the form ``major.minor.patch``
+
+.. py:class:: loot_api.PluginMetadata
+
+  Wraps :cpp:class:`loot::PluginMetadata`.
+
+  .. py:method:: get_simple_messages(loot_api.PluginMetadata, unicode) -> list<loot_api.SimpleMessage>
+
+    Get the plugin’s messages as SimpleMessage objects for the given language.
+    Wraps :cpp:func:`GetPluginMessages`.
