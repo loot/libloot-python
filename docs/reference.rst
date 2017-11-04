@@ -141,12 +141,25 @@ Functions
   Initialise the current global locale using the given ID. Wraps
   :cpp:func:`loot::InitialiseLocale`.
 
-.. py:function:: loot_api.create_database(game : loot_api.GameType, [game_path : unicode = u'', [game_local_path : unicode = u'']]) -> loot_api.DatabaseInterface
+.. py:function:: loot_api.create_game_handle(game : loot_api.GameType, [game_path : unicode = u'', [game_local_path : unicode = u'']]) -> loot_api.GameInterface
 
-  Initialise a new database handle. Wraps :cpp:func:`loot::CreateDatabase`.
+  Initialise a new game handle. Wraps :cpp:func:`loot::CreateGameHandle`.
 
 Classes
 =======
+
+.. py:class:: loot_api.GameInterface
+
+  Wraps :cpp:class:`loot::GameInterface`.
+
+  .. py:function:: loot_api.get_database() -> loot_api.DatabaseInterface
+
+    Get a database handle. Wraps :cpp:func:`loot::GetDatabase`.
+
+  .. py:function:: loot_api.load_current_load_order_state() -> NoneType
+
+    Load the current load order state, discarding any previously held state.
+    Wraps :cpp:func:`loot::LoadCurrentLoadOrderState`.
 
 .. py:class:: loot_api.DatabaseInterface
 

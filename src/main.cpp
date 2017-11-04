@@ -103,6 +103,10 @@ void bindVersionClasses(pybind11::module& module) {
 }
 
 void bindInterfaceClasses(pybind11::module& module) {
+  class_<GameInterface, std::shared_ptr<GameInterface>>(module, "GameInterface")
+    .def("load_current_load_order_state", &GameInterface::LoadCurrentLoadOrderState)
+    .def("get_database", &GameInterface::GetDatabase);
+
   class_<DatabaseInterface, std::shared_ptr<DatabaseInterface>>(module, "DatabaseInterface")
     .def("load_lists", &DatabaseInterface::LoadLists, arg("masterlist_path"), arg("userlist_path") = "")
     .def("update_masterlist", &DatabaseInterface::UpdateMasterlist)
@@ -133,7 +137,10 @@ void bindFunctions(pybind11::module& module) {
 
   module.def("initialise_locale", &InitialiseLocale);
 
-  module.def("create_database", &CreateDatabase, arg("game"), arg("game_path") = "", arg("game_local_path") = "");
+  module.def("create_game_handle", &CreateGameHandle, 
+    arg("game"), 
+    arg("game_path") = "", 
+    arg("game_local_path") = "");
 }
 }
 

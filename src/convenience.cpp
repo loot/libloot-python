@@ -27,11 +27,6 @@ along with LOOT.  If not, see
 #include <loot/api.h>
 
 namespace loot {
-std::shared_ptr<DatabaseInterface> CreateDatabase(const GameType game, const std::string & game_path, const std::string & game_local_path) {
-  auto gameHandle = CreateGameHandle(game, game_path, game_local_path);
-
-  return gameHandle->GetDatabase();
-}
 PluginTags GetPluginTags(const std::shared_ptr<DatabaseInterface> db, const std::string& plugin, bool evaluateConditions) {
   PluginTags tags;
 

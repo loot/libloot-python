@@ -9,7 +9,7 @@ from loot_api import WrapperVersion
 from loot_api import GameType
 from loot_api import SimpleMessage
 from loot_api import MessageType
-from loot_api import create_database
+from loot_api import create_game_handle
 from loot_api import is_compatible
 from loot_api import set_logging_callback
 from loot_api import initialise_locale
@@ -58,7 +58,8 @@ class TestLootApi(GameFixture):
         self.assertEqual(WrapperVersion.string(), "3.0.0")
 
     def test_create_db(self):
-        db = create_database(GameType.tes4, self.game_path, self.local_path)
+        game = create_game_handle(GameType.tes4, self.game_path, self.local_path)
+        db = game.get_database()
         self.assertNotEqual(db, None)
 
 class TestDatabaseInterface(GameFixture):
@@ -67,7 +68,10 @@ class TestDatabaseInterface(GameFixture):
     def setUp(self):
         super(TestDatabaseInterface, self).setUp()
 
-        self.db = create_database(GameType.tes4, self.game_path, self.local_path)
+        game = create_game_handle(GameType.tes4, self.game_path, self.local_path)
+        game.load_current_load_order_state()
+
+        self.db = game.get_database()
 
     def test_load_lists(self):
         self.db.load_lists(self.masterlist_path, u'')

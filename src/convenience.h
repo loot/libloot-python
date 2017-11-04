@@ -34,10 +34,6 @@ along with LOOT.  If not, see
 #include "plugin_tags.h"
 
 namespace loot {
-std::shared_ptr<DatabaseInterface> CreateDatabase(const GameType game,
-                                                  const std::string& game_path = "",
-                                                  const std::string& game_local_path = "");
-
 PluginTags GetPluginTags(const std::shared_ptr<DatabaseInterface> db,
                          const std::string& plugin,
                          bool evaluateConditions = false);
