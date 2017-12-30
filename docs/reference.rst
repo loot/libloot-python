@@ -136,9 +136,10 @@ Functions
 
   Checks for API compatibility. Wraps :cpp:func:`loot::IsCompatible`.
 
-.. py:function:: loot_api.InitialiseLocale(unicode) -> NoneType
+.. py:function:: loot_api.InitialiseLocale(unicode = u'') -> NoneType
 
-  Initialise the current global locale using the given ID. Wraps
+  Initialise the current global locale using the given ID. A blank value means
+  that the system default locale will be initialised. Wraps
   :cpp:func:`loot::InitialiseLocale`.
 
 .. py:function:: loot_api.create_game_handle(game : loot_api.GameType, [game_path : unicode = u'', [game_local_path : unicode = u'']]) -> loot_api.GameInterface

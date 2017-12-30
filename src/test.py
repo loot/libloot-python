@@ -18,7 +18,7 @@ def logging_callback(level, message):
     pass
 
 set_logging_callback(logging_callback)
-initialise_locale("")
+initialise_locale()
 
 class GameFixture(unittest.TestCase):
     game_path = os.path.join(u'.', u'Oblivion')
