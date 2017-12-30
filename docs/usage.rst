@@ -28,7 +28,7 @@ To check if the module loaded is compatible with the version of the API that you
 developed against::
 
   >>> import loot_api
-  >>> loot_api.is_compatible(0,10,0)
+  >>> loot_api.is_compatible(0,12,0)
   True
   >>> loot_api.is_compatible(0,9,0)
   False
@@ -39,8 +39,9 @@ Getting a Plugin's Bash Tag Suggestions
 To get a plugin's Bash Tag suggestions from a ``masterlist.yaml`` metadata file::
 
   >>> import loot_api
-  >>> db = loot_api.create_database(loot_api.GameType.tes4, '', '')
-  >>> db.load_lists('masterlist.yaml', '')
+  >>> loot_api.initialise_locale()
+  >>> db = loot_api.create_game_handle(loot_api.GameType.tes4, 'C:\\path\\to\\oblivion\\directory')
+  >>> db.load_lists('masterlist.yaml')
   >>> tags = db.get_plugin_tags(u'Unofficial Oblivion Patch.esp')
   >>> tags.added
   set([u'Scripts', u'Relations', u'C.Owner', u'Actors.AIPackages', u'Actors.Stats', u'Actors.ACBS', u'C.Music', u'Factions', u'Invent', u'Relev', u'Names', u'C.Light', u'Delev', u'C.Name', u'C.Climate', u'NPC.Class', u'Stats', u'Actors.DeathItem', u'Creatures.Blood', u'Actors.CombatStyle', u'Actors.AIData'])
