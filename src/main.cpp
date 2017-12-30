@@ -137,9 +137,9 @@ void bindFunctions(pybind11::module& module) {
 
   module.def("initialise_locale", &InitialiseLocale, arg("id") = "");
 
-  module.def("create_game_handle", &CreateGameHandle, 
-    arg("game"), 
-    arg("game_path") = "", 
+  module.def("create_game_handle", &CreateGameHandle,
+    arg("game"),
+    arg("game_path"),
     arg("game_local_path") = "");
 }
 }
