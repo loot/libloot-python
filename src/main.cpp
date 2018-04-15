@@ -41,9 +41,11 @@ void bindEnums(pybind11::module& module) {
     .value("tes4", GameType::tes4)
     .value("tes5", GameType::tes5)
     .value("tes5se", GameType::tes5se)
+    .value("tes5vr", GameType::tes5vr)
     .value("fo3", GameType::fo3)
     .value("fonv", GameType::fonv)
-    .value("fo4", GameType::fo4);
+    .value("fo4", GameType::fo4)
+    .value("fo4vr", GameType::fo4vr);
 
   enum_<LogLevel>(module, "LogLevel")
     .value("trace", LogLevel::trace)
