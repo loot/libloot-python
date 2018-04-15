@@ -51,11 +51,11 @@ class TestLootApi(GameFixture):
 
     def test_wrapper_version(self):
         self.assertEqual(WrapperVersion.major, 3)
-        self.assertEqual(WrapperVersion.minor, 0)
+        self.assertEqual(WrapperVersion.minor, 1)
         self.assertEqual(WrapperVersion.patch, 0)
         self.assertNotEqual(WrapperVersion.revision, u'')
         self.assertNotEqual(WrapperVersion.revision, Version.revision)
-        self.assertEqual(WrapperVersion.string(), "3.0.0")
+        self.assertEqual(WrapperVersion.string(), "3.1.0")
 
     def test_create_db(self):
         game = create_game_handle(GameType.tes4, self.game_path, self.local_path)
