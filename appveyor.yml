@@ -2,7 +2,7 @@ os: Visual Studio 2015
 
 version: "{build}-{branch}"
 
-configuration: Release
+configuration: RelWithDebInfo
 
 environment:
   bintray_auth_token:
@@ -22,12 +22,12 @@ build:
   project: 'c:\projects\loot-api-python\build\loot_api_python.sln'
 
 test_script:
-  - cd %APPVEYOR_BUILD_FOLDER%\build\Release
+  - cd %APPVEYOR_BUILD_FOLDER%\build\%CONFIGURATION%
   - python -m unittest test
 
 after_test:
   - cd %APPVEYOR_BUILD_FOLDER%\build
-  - cpack
+  - cpack -C %CONFIGURATION%
   # AppVeyor checks out a specific commit, but that means the archive script
   # can't tell which branch it's on, so rename the 7z archives.
   - ps: $env:GIT_DESCRIBE = ((git describe --tags --long --always) | Out-String) -replace "`n|`r", ""

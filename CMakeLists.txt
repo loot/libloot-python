@@ -128,12 +128,20 @@ add_custom_command(TARGET loot_api POST_BUILD
 
 install(TARGETS loot_api
         DESTINATION "."
-        CONFIGURATIONS Release)
+        CONFIGURATIONS Release RelWithDebInfo)
 
 install(FILES "${LOOT_API_EXTRACTED_PATH}/${LOOT_API_SHARED_LIBRARY}"
         "${CMAKE_SOURCE_DIR}/docs/README.md"
         DESTINATION "."
-        CONFIGURATIONS Release)
+        CONFIGURATIONS Release RelWithDebInfo)
+
+IF (MSVC)
+    install(FILES $<TARGET_PDB_FILE:loot_api>
+            DESTINATION .
+            OPTIONAL
+            CONFIGURATIONS RelWithDebInfo
+            RENAME loot_api_python.pdb)
+ENDIF ()
 
 ########################################
 # CPack
