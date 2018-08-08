@@ -61,4 +61,4 @@ deploy:
       appveyor_repo_tag: true
 
 on_success:
-  - ps: python "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py" -o loot -g loot-api-python -u wrinklyninja -b loot -p loot-api-python -t $env:bintray_auth_token -n 30
+  - ps: python "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py" -o loot -g loot-api-python -u loot -b snapshots -p loot-api-python -t $env:bintray_auth_token -n 30
