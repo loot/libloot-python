@@ -1,7 +1,7 @@
 LOOT API Python Module
 =======================
 
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/loot/loot-api-python?branch=master&svg=true)](https://ci.appveyor.com/project/WrinklyNinja/loot-api-python)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/k2ugge3po7254o1o/branch/master?svg=true)](https://ci.appveyor.com/project/LOOT/loot-api-python/branch/master)
 [![Travis Build Status](https://travis-ci.org/loot/loot-api-python.svg?branch=master)](https://travis-ci.org/loot/loot-api-python)
 [![Documentation Status](https://readthedocs.org/projects/loot-api-python/badge/)](http://loot-api-python.readthedocs.io/)
 

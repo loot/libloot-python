@@ -11,7 +11,7 @@ environment:
     secure: yDqT5l/e5MntbW99V6+MHlfFgNv+UIogFfeyUVqtFk5lFRB/dAraLLwKCLl6y+DH
 
 install:
-  - ps: (New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/WrinklyNinja/ci-scripts/2.0.0/delete_old_bintray_versions.py', "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py")
+  - ps: (New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/Ortham/ci-scripts/2.0.0/delete_old_bintray_versions.py', "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py")
 
 before_build:
   - cd %APPVEYOR_BUILD_FOLDER%
