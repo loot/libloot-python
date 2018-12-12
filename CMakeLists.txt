@@ -34,7 +34,7 @@ configure_file("${CMAKE_SOURCE_DIR}/src/wrapper_version.cpp.in" "${CMAKE_BINARY_
 # pybind11
 #######################################
 
-set(PYBIND11_VERSION "2.1.1")
+set(PYBIND11_VERSION "2.2.4")
 set(PYBIND11_URL "https://github.com/pybind/pybind11/archive/v${PYBIND11_VERSION}.tar.gz")
 set(PYBIND11_DOWNLOAD_PATH "${EXTERNAL_PROJECTS_PATH}/pybind11-${PYBIND11_VERSION}.tar.gz")
 set(PYBIND11_EXTRACTED_PATH "${EXTERNAL_PROJECTS_PATH}/pybind11-${PYBIND11_VERSION}")
@@ -88,9 +88,6 @@ ExternalProject_Add(test-masterlist
 #######################################
 # Python Module
 #######################################
-
-# pybind11 v2.1.1 doesn't recognise MSVC as supporting C++17, so force it.
-add_definitions(-DPYBIND11_CPP17)
 
 pybind11_add_module(loot_api  "${CMAKE_SOURCE_DIR}/src/main.cpp"
                               "${CMAKE_SOURCE_DIR}/src/convenience.cpp"
