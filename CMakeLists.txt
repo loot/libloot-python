@@ -80,7 +80,7 @@ set(LIBLOOT_SHARED_LIBRARY "${CMAKE_SHARED_LIBRARY_PREFIX}loot${CMAKE_SHARED_LIB
 
 ExternalProject_Add(test-masterlist
                     PREFIX "external"
-                    URL "https://github.com/loot/oblivion/archive/09286601739c11a3a3e4552c6ddbdcaeffd1a8d3.zip"
+                    URL "https://github.com/loot/oblivion/archive/7f125ae4464224ff785111c7667c2cff85c896ec.zip"
                     CONFIGURE_COMMAND ""
                     BUILD_COMMAND ""
                     INSTALL_COMMAND "")
