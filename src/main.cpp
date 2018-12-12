@@ -34,8 +34,32 @@ using pybind11::arg;
 using pybind11::enum_;
 using pybind11::class_;
 using pybind11::metaclass;
+using std::filesystem::path;
+using std::filesystem::u8path;
 
 namespace loot {
+namespace py {
+std::shared_ptr<GameInterface> CreateGameHandle(GameType gameType, std::string gamePath, std::string gameLocalPath) {
+  return CreateGameHandle(gameType, u8path(gamePath), u8path(gameLocalPath));
+}
+
+void LoadLists(std::shared_ptr<DatabaseInterface> db, std::string masterlistPath, std::string userlistPath) {
+  return db->LoadLists(u8path(masterlistPath), u8path(userlistPath));
+}
+
+void WriteMinimalList(std::shared_ptr<DatabaseInterface> db, std::string outputFile, bool overwrite) {
+  return db->WriteMinimalList(u8path(outputFile), overwrite);
+}
+
+bool UpdateMasterlist(std::shared_ptr<DatabaseInterface> db, std::string masterlistPath, std::string remoteUrl, std::string remoteBranch) {
+  return db->UpdateMasterlist(u8path(masterlistPath), remoteUrl, remoteBranch);
+}
+
+MasterlistInfo GetMasterlistRevision(std::shared_ptr<DatabaseInterface> db, std::string masterlistPath, bool getShortId) {
+  return db->GetMasterlistRevision(u8path(masterlistPath), getShortId);
+}
+}
+
 void bindEnums(pybind11::module& module) {
   enum_<GameType>(module, "GameType")
     .value("tes4", GameType::tes4)
@@ -94,7 +118,7 @@ void bindVersionClasses(pybind11::module& module) {
     .def_readonly_static("minor", &LootVersion::minor)
     .def_readonly_static("patch", &LootVersion::patch)
     .def_readonly_static("revision", &LootVersion::revision)
-    .def_static("string", LootVersion::string);
+    .def_static("string", LootVersion::GetVersionString);
 
   class_<WrapperVersion>(module, "WrapperVersion")
     .def_readonly_static("major", &WrapperVersion::major)
@@ -110,9 +134,9 @@ void bindInterfaceClasses(pybind11::module& module) {
     .def("get_database", &GameInterface::GetDatabase);
 
   class_<DatabaseInterface, std::shared_ptr<DatabaseInterface>>(module, "DatabaseInterface")
-    .def("load_lists", &DatabaseInterface::LoadLists, arg("masterlist_path"), arg("userlist_path") = "")
-    .def("update_masterlist", &DatabaseInterface::UpdateMasterlist)
-    .def("get_masterlist_revision", &DatabaseInterface::GetMasterlistRevision)
+    .def("load_lists", &py::LoadLists, arg("masterlist_path"), arg("userlist_path") = "")
+    .def("update_masterlist", &py::UpdateMasterlist)
+    .def("get_masterlist_revision", &py::GetMasterlistRevision)
     .def("get_plugin_metadata", &DatabaseInterface::GetPluginMetadata,
       arg("plugin"),
       arg("includeUserMetadata") = true,
@@ -123,7 +147,7 @@ void bindInterfaceClasses(pybind11::module& module) {
     .def("get_plugin_cleanliness", &GetPluginCleanliness,
       arg("plugin"),
       arg("evaluateConditions") = false)
-    .def("write_minimal_list", &DatabaseInterface::WriteMinimalList);
+    .def("write_minimal_list", &py::WriteMinimalList);
 }
 
 void bindClasses(pybind11::module& module) {
@@ -139,7 +163,7 @@ void bindFunctions(pybind11::module& module) {
 
   module.def("initialise_locale", &InitialiseLocale, arg("id") = "");
 
-  module.def("create_game_handle", &CreateGameHandle,
+  module.def("create_game_handle", &py::CreateGameHandle,
     arg("game"),
     arg("game_path"),
     arg("game_local_path") = "");

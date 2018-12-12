@@ -40,14 +40,14 @@ class GameFixture(unittest.TestCase):
 class TestLootApi(GameFixture):
     def test_is_compatible(self):
         self.assertFalse(is_compatible(0, 9, 0))
-        self.assertTrue(is_compatible(0, 13, 0))
+        self.assertTrue(is_compatible(0, 14, 0))
 
     def test_version(self):
         self.assertEqual(Version.major, 0)
-        self.assertEqual(Version.minor, 13)
-        self.assertEqual(Version.patch, 2)
+        self.assertEqual(Version.minor, 14)
+        self.assertEqual(Version.patch, 0)
         self.assertNotEqual(Version.revision, u'')
-        self.assertEqual(Version.string(), "0.13.2")
+        self.assertEqual(Version.string(), "0.14.0")
 
     def test_wrapper_version(self):
         self.assertEqual(WrapperVersion.major, 3)

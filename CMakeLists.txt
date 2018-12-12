@@ -6,6 +6,10 @@ include(ExternalProject)
 set(EXTERNAL_PROJECTS_PATH "${CMAKE_BINARY_DIR}/external/src")
 make_directory(${EXTERNAL_PROJECTS_PATH})
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 ##############################
 # Get Build Revision
 ##############################
@@ -50,25 +54,25 @@ add_subdirectory(${PYBIND11_EXTRACTED_PATH})
 #######################################
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set(LOOT_API_URL "https://github.com/loot/loot-api/releases/download/0.13.2/loot_api-0.13.2-0-g5956e60_dev-win32.7z")
+    set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.0/libloot-0.14.0-0-g2e074a4_dev-win32.7z")
 else()
-    set(LOOT_API_URL "https://github.com/loot/loot-api/releases/download/0.13.2/loot-api.tar.xz")
+    set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.0/libloot.tar.xz")
 endif()
 
-ExternalProject_Add(loot-api-c++
+ExternalProject_Add(libloot
                     PREFIX "external"
-                    URL ${LOOT_API_URL}
+                    URL ${LIBLOOT_URL}
                     CONFIGURE_COMMAND ""
                     BUILD_COMMAND ""
                     INSTALL_COMMAND "")
-ExternalProject_Get_Property(loot-api-c++ SOURCE_DIR)
-set(LOOT_API_EXTRACTED_PATH ${SOURCE_DIR})
+ExternalProject_Get_Property(libloot SOURCE_DIR)
+set(LIBLOOT_EXTRACTED_PATH ${SOURCE_DIR})
 
 include_directories("${CMAKE_SOURCE_DIR}/src"
-                    "${LOOT_API_EXTRACTED_PATH}/include")
-link_directories(${LOOT_API_EXTRACTED_PATH})
-set(LOOT_API_STATIC_LIBRARY "${CMAKE_STATIC_LIBRARY_PREFIX}loot_api${CMAKE_STATIC_LIBRARY_SUFFIX}")
-set(LOOT_API_SHARED_LIBRARY "${CMAKE_SHARED_LIBRARY_PREFIX}loot_api${CMAKE_SHARED_LIBRARY_SUFFIX}")
+                    "${LIBLOOT_EXTRACTED_PATH}/include")
+link_directories(${LIBLOOT_EXTRACTED_PATH})
+set(LIBLOOT_STATIC_LIBRARY "${CMAKE_STATIC_LIBRARY_PREFIX}loot${CMAKE_STATIC_LIBRARY_SUFFIX}")
+set(LIBLOOT_SHARED_LIBRARY "${CMAKE_SHARED_LIBRARY_PREFIX}loot${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
 #######################################
 # Test Masterlist
@@ -85,16 +89,19 @@ ExternalProject_Add(test-masterlist
 # Python Module
 #######################################
 
+# pybind11 v2.1.1 doesn't recognise MSVC as supporting C++17, so force it.
+add_definitions(-DPYBIND11_CPP17)
+
 pybind11_add_module(loot_api  "${CMAKE_SOURCE_DIR}/src/main.cpp"
                               "${CMAKE_SOURCE_DIR}/src/convenience.cpp"
                               "${CMAKE_BINARY_DIR}/generated/wrapper_version.cpp")
 
-add_dependencies(loot_api loot-api-c++ test-masterlist)
+add_dependencies(loot_api libloot test-masterlist)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries(loot_api PRIVATE ${LOOT_API_STATIC_LIBRARY})
+    target_link_libraries(loot_api PRIVATE ${LIBLOOT_STATIC_LIBRARY})
 else()
-    target_link_libraries(loot_api PRIVATE ${LOOT_API_SHARED_LIBRARY})
+    target_link_libraries(loot_api PRIVATE ${LIBLOOT_SHARED_LIBRARY})
 endif()
 
 ########################################
@@ -106,8 +113,8 @@ find_package(PythonInterp REQUIRED)
 # Copy the API binary to the build directory.
 add_custom_command(TARGET loot_api POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${LOOT_API_EXTRACTED_PATH}/${LOOT_API_SHARED_LIBRARY}"
-        "$<TARGET_FILE_DIR:loot_api>/${LOOT_API_SHARED_LIBRARY}")
+        "${LIBLOOT_EXTRACTED_PATH}/${LIBLOOT_SHARED_LIBRARY}"
+        "$<TARGET_FILE_DIR:loot_api>/${LIBLOOT_SHARED_LIBRARY}")
 
 # Copy the test masterlist to the build directory.
 ExternalProject_Get_Property(test-masterlist SOURCE_DIR)
@@ -130,7 +137,7 @@ install(TARGETS loot_api
         DESTINATION "."
         CONFIGURATIONS Release RelWithDebInfo)
 
-install(FILES "${LOOT_API_EXTRACTED_PATH}/${LOOT_API_SHARED_LIBRARY}"
+install(FILES "${LIBLOOT_EXTRACTED_PATH}/${LIBLOOT_SHARED_LIBRARY}"
         "${CMAKE_SOURCE_DIR}/docs/README.md"
         DESTINATION "."
         CONFIGURATIONS Release RelWithDebInfo)
