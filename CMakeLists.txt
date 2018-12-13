@@ -54,7 +54,11 @@ add_subdirectory(${PYBIND11_EXTRACTED_PATH})
 #######################################
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.0/libloot-0.14.0-0-g2e074a4_dev-win32.7z")
+    if (NOT "${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)")
+        set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.0/libloot-0.14.0-0-g2e074a4_dev-win32.7z")
+    else()
+        set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.0/libloot-0.14.0-0-g2e074a4_dev-win64.7z")
+    endif()
 else()
     set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.0/libloot.tar.xz")
 endif()
