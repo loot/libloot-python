@@ -14,18 +14,23 @@ environment:
   github_auth_token:
     secure: yDqT5l/e5MntbW99V6+MHlfFgNv+UIogFfeyUVqtFk5lFRB/dAraLLwKCLl6y+DH
 
+  matrix:
+    - PYTHON_VERSION: 2.7
+    - PYTHON_VERSION: 3.7
+
 install:
   - ps: (New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/Ortham/ci-scripts/2.0.0/delete_old_bintray_versions.py', "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py")
 
 before_build:
+  - ps: $env:PYTHON_DIRECTORY_VERSION=$env:PYTHON_VERSION.Replace(".", "")
   - cd %APPVEYOR_BUILD_FOLDER%
   - ps: mkdir build
   - cd build
   - ps: |
       if ($env:PLATFORM -eq 'Win32') {
-        cmake .. -G "Visual Studio 15 2017" -DPYTHON_EXECUTABLE="C:\Python27\python.exe"
+        cmake .. -G "Visual Studio 15 2017" -DPYTHON_EXECUTABLE="C:\Python${env:PYTHON_DIRECTORY_VERSION}\python.exe"
       } else {
-        cmake .. -G "Visual Studio 15 2017 Win64" -DPYTHON_EXECUTABLE="C:\Python27-x64\python.exe"
+        cmake .. -G "Visual Studio 15 2017 Win64" -DPYTHON_EXECUTABLE="C:\Python${env:PYTHON_DIRECTORY_VERSION}-x64\python.exe"
       }
 
 build:
@@ -35,7 +40,7 @@ build:
 test_script:
   - cd %APPVEYOR_BUILD_FOLDER%\build\%CONFIGURATION%
   - ps: $env:ARCHITECTURE=$env:PLATFORM.Substring($env:PLATFORM.Length - 2)
-  - py -2.7-%ARCHITECTURE% -m unittest test
+  - py -%PYTHON_VERSION%-%ARCHITECTURE% -m unittest test
 
 after_test:
   - cd %APPVEYOR_BUILD_FOLDER%\build
@@ -45,7 +50,7 @@ after_test:
   - ps: $env:GIT_DESCRIBE = ((git describe --tags --long --always) | Out-String) -replace "`n|`r", ""
 
 artifacts:
-  - path: build\package\loot_api_python-$(GIT_DESCRIBE)_$(APPVEYOR_REPO_BRANCH)-win$(ARCHITECTURE).7z
+  - path: build\package\loot_api_python-$(GIT_DESCRIBE)_$(APPVEYOR_REPO_BRANCH)-python$(PYTHON_VERSION)-win$(ARCHITECTURE).7z
     name: loot_api_python
 
 deploy:
