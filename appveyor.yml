@@ -4,6 +4,10 @@ version: "{build}-{branch}"
 
 configuration: RelWithDebInfo
 
+platform:
+  - Win32
+  - x64
+
 environment:
   bintray_auth_token:
     secure: PgsEA6TjHVf718zMnK7J/fT1hUAVNKBeWhpYgYaeCyeZk37VT4Ics6j7+B7ElLEr
@@ -17,7 +21,12 @@ before_build:
   - cd %APPVEYOR_BUILD_FOLDER%
   - ps: mkdir build
   - cd build
-  - cmake .. -G "Visual Studio 15 2017"
+  - ps: |
+      if ($env:PLATFORM -eq 'Win32') {
+        cmake .. -G "Visual Studio 15 2017" -DPYTHON_EXECUTABLE="C:\Python27\python.exe"
+      } else {
+        cmake .. -G "Visual Studio 15 2017 Win64" -DPYTHON_EXECUTABLE="C:\Python27-x64\python.exe"
+      }
 
 build:
   verbosity: minimal
@@ -25,7 +34,8 @@ build:
 
 test_script:
   - cd %APPVEYOR_BUILD_FOLDER%\build\%CONFIGURATION%
-  - python -m unittest test
+  - ps: $env:ARCHITECTURE=$env:PLATFORM.Substring($env:PLATFORM.Length - 2)
+  - py -2.7-%ARCHITECTURE% -m unittest test
 
 after_test:
   - cd %APPVEYOR_BUILD_FOLDER%\build
@@ -35,7 +45,7 @@ after_test:
   - ps: $env:GIT_DESCRIBE = ((git describe --tags --long --always) | Out-String) -replace "`n|`r", ""
 
 artifacts:
-  - path: build\package\loot_api_python-$(GIT_DESCRIBE)_$(APPVEYOR_REPO_BRANCH)-win32.7z
+  - path: build\package\loot_api_python-$(GIT_DESCRIBE)_$(APPVEYOR_REPO_BRANCH)-win$(ARCHITECTURE).7z
     name: loot_api_python
 
 deploy:
