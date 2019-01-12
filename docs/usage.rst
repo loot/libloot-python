@@ -28,7 +28,7 @@ To check if the module loaded is compatible with the version of the API that you
 developed against::
 
   >>> import loot_api
-  >>> loot_api.is_compatible(0,12,0)
+  >>> loot_api.is_compatible(0,14,0)
   True
   >>> loot_api.is_compatible(0,9,0)
   False

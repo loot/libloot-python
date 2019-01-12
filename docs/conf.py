@@ -55,7 +55,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'LOOT API Python Module'
-copyright = u'2016, WrinklyNinja'
+copyright = u'2019, WrinklyNinja'
 author = u'WrinklyNinja'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -346,5 +346,5 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    'loot_api': ('http://loot.readthedocs.io/en/0.10.2/', None),
+    'loot_api': ('http://loot.readthedocs.io/en/0.14.1/', None),
 }
