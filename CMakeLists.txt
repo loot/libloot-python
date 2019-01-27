@@ -55,12 +55,12 @@ add_subdirectory(${PYBIND11_EXTRACTED_PATH})
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
     if (NOT "${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)")
-        set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.1/libloot-0.14.1-0-gc8090fe_dev-win32.7z")
+        set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.3/libloot-0.14.3-0-g56d8f78_dev-win32.7z")
     else()
-        set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.1/libloot-0.14.1-0-gc8090fe_dev-win64.7z")
+        set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.3/libloot-0.14.3-0-g56d8f78_dev-win64.7z")
     endif()
 else()
-    set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.1/libloot.tar.xz")
+    set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.3/libloot.tar.xz")
 endif()
 
 ExternalProject_Add(libloot
