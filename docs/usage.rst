@@ -10,13 +10,13 @@ Build archives contain two binaries:
 * ``loot_api.pyd`` is the Python wrapper
 * ``loot_api.dll`` is the C++ API DLL that the Python wrapper was built against.
 
-The C++ DLL requires the `Visual C++ 2015 Redistributable (x86)`_
+The C++ DLL requires the `Visual C++ 2017 Redistributable (x86)`_
 to be installed.
 
 To use the wrapper, copy both files to wherever you want to import them from
 (they must be in the same folder), and you're done!
 
-.. _Visual C++ 2015 Redistributable (x86): https://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x86.exe
+.. _Visual C++ 2017 Redistributable (x86): https://download.visualstudio.microsoft.com/download/pr/749aa419-f9e4-4578-a417-a43786af205e/d59197078cc425377be301faba7dd87a/vc_redist.x86.exe
 
 Using the wrapper
 =================
