@@ -79,17 +79,6 @@ set(LIBLOOT_STATIC_LIBRARY "${CMAKE_STATIC_LIBRARY_PREFIX}loot${CMAKE_STATIC_LIB
 set(LIBLOOT_SHARED_LIBRARY "${CMAKE_SHARED_LIBRARY_PREFIX}loot${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
 #######################################
-# Test Masterlist
-#######################################
-
-ExternalProject_Add(test-masterlist
-                    PREFIX "external"
-                    URL "https://github.com/loot/oblivion/archive/7f125ae4464224ff785111c7667c2cff85c896ec.zip"
-                    CONFIGURE_COMMAND ""
-                    BUILD_COMMAND ""
-                    INSTALL_COMMAND "")
-
-#######################################
 # Python Module
 #######################################
 
@@ -97,7 +86,7 @@ pybind11_add_module(loot_api  "${CMAKE_SOURCE_DIR}/src/main.cpp"
                               "${CMAKE_SOURCE_DIR}/src/convenience.cpp"
                               "${CMAKE_BINARY_DIR}/generated/wrapper_version.cpp")
 
-add_dependencies(loot_api libloot test-masterlist)
+add_dependencies(loot_api libloot)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries(loot_api PRIVATE ${LIBLOOT_STATIC_LIBRARY})
@@ -117,14 +106,7 @@ add_custom_command(TARGET loot_api POST_BUILD
         "${LIBLOOT_EXTRACTED_PATH}/${LIBLOOT_SHARED_LIBRARY}"
         "$<TARGET_FILE_DIR:loot_api>/${LIBLOOT_SHARED_LIBRARY}")
 
-# Copy the test masterlist to the build directory.
-ExternalProject_Get_Property(test-masterlist SOURCE_DIR)
-add_custom_command(TARGET loot_api POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${SOURCE_DIR}/masterlist.yaml"
-        "$<TARGET_FILE_DIR:loot_api>/masterlist.yaml")
-
-# Also copy the test Python script to the build directory.
+# Copy the test Python script to the build directory.
 add_custom_command(TARGET loot_api POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${CMAKE_SOURCE_DIR}/src/test.py"

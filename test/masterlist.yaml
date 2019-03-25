@@ -1,0 +1,30 @@
+plugins:
+  - name: Oblivion.esm
+    msg:
+      - type: error
+        content: 'This must not be activated. However, it can be useful when porting Oblivion mods to Nehrim.'
+
+  - name: Unofficial Oblivion Patch.esp
+    tag:
+      - Actors.ACBS
+      - Actors.AIData
+      - Actors.AIPackages
+      - Actors.CombatStyle
+      - Actors.DeathItem
+      - Actors.Stats
+      - C.Climate
+      - C.Light
+      - C.Music
+      - C.Name
+      - C.Owner
+      - Creatures.Blood
+      - Delev
+      - Factions
+      - Invent
+      - Names
+      - NPC.Class
+      - Relations
+      - Relev
+      - Scripts
+      - Stats
+      - -C.Water

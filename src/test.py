@@ -63,7 +63,7 @@ class TestLootApi(GameFixture):
         self.assertNotEqual(db, None)
 
 class TestDatabaseInterface(GameFixture):
-    masterlist_path = u'masterlist.yaml'
+    masterlist_path = u'../../test/masterlist.yaml'
 
     def setUp(self):
         super(TestDatabaseInterface, self).setUp()
