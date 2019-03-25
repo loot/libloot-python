@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 
 import cProfile
+import os
 import os.path
 import shutil
+import sys
 import unittest
+
+sys.path.append(os.getcwd())
+
 from loot_api import Version
 from loot_api import WrapperVersion
 from loot_api import GameType
@@ -63,7 +68,7 @@ class TestLootApi(GameFixture):
         self.assertNotEqual(db, None)
 
 class TestDatabaseInterface(GameFixture):
-    masterlist_path = u'../../test/masterlist.yaml'
+    masterlist_path = os.path.join(os.path.dirname(__file__), u'masterlist.yaml')
 
     def setUp(self):
         super(TestDatabaseInterface, self).setUp()

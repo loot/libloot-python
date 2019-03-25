@@ -106,11 +106,11 @@ add_custom_command(TARGET loot_api POST_BUILD
         "${LIBLOOT_EXTRACTED_PATH}/${LIBLOOT_SHARED_LIBRARY}"
         "$<TARGET_FILE_DIR:loot_api>/${LIBLOOT_SHARED_LIBRARY}")
 
-# Copy the test Python script to the build directory.
-add_custom_command(TARGET loot_api POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_SOURCE_DIR}/src/test.py"
-        "$<TARGET_FILE_DIR:loot_api>/test.py")
+enable_testing()
+
+add_test(NAME python
+         WORKING_DIRECTORY $<TARGET_FILE_DIR:loot_api>
+         COMMAND "${PYTHON_EXECUTABLE}" ${CMAKE_SOURCE_DIR}/test/test.py)
 
 ########################################
 # Install
