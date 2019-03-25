@@ -14,6 +14,7 @@ from loot_api import WrapperVersion
 from loot_api import GameType
 from loot_api import SimpleMessage
 from loot_api import MessageType
+from loot_api import PluginCleanliness
 from loot_api import create_game_handle
 from loot_api import is_compatible
 from loot_api import set_logging_callback
@@ -121,6 +122,40 @@ class TestDatabaseInterface(GameFixture):
         self.assertEqual(messages[0].type, MessageType.error)
         self.assertEqual(messages[0].text, u'This must not be activated. However, it can be useful when porting Oblivion mods to Nehrim.')
 
+    def test_get_plugin_cleanliness_should_be_unknown_if_no_dirty_or_clean_metadata_exists(self):
+        self.db.load_lists(self.masterlist_path, u'')
+
+        cleanliness = self.db.get_plugin_cleanliness(u'unknown.esp')
+
+        self.assertEqual(cleanliness, PluginCleanliness.unknown)
+
+    def test_get_plugin_cleanliness_should_be_unknown_if_dirty_and_clean_metadata_exists(self):
+        self.db.load_lists(self.masterlist_path, u'')
+
+        cleanliness = self.db.get_plugin_cleanliness(u'clean_and_dirty.esp')
+
+        self.assertEqual(cleanliness, PluginCleanliness.unknown)
+
+    def test_get_plugin_cleanliness_should_be_clean_if_only_clean_metadata_exists(self):
+        self.db.load_lists(self.masterlist_path, u'')
+
+        cleanliness = self.db.get_plugin_cleanliness(u'clean.esp')
+
+        self.assertEqual(cleanliness, PluginCleanliness.clean)
+
+    def test_get_plugin_cleanliness_should_be_dirty_if_only_dirty_metadata_exists(self):
+        self.db.load_lists(self.masterlist_path, u'')
+
+        cleanliness = self.db.get_plugin_cleanliness(u'dirty.esp')
+
+        self.assertEqual(cleanliness, PluginCleanliness.dirty)
+
+    def test_get_plugin_cleanliness_should_be_do_not_clean_if_dirty_do_not_clean_info_exists(self):
+        self.db.load_lists(self.masterlist_path, u'')
+
+        cleanliness = self.db.get_plugin_cleanliness(u'do_not_clean.esp')
+
+        self.assertEqual(cleanliness, PluginCleanliness.do_not_clean)
 
 if __name__ == '__main__':
     unittest.main()

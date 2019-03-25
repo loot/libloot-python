@@ -57,26 +57,27 @@ PluginTags GetPluginTags(const std::shared_ptr<DatabaseInterface> db, const std:
 PluginCleanliness GetPluginCleanliness(const std::shared_ptr<DatabaseInterface> db, const std::string& plugin, bool evaluateConditions) {
   auto metadata = db->GetPluginMetadata(plugin, true, evaluateConditions);
 
-  if (metadata.has_value()) {
-    if (metadata.value().GetDirtyInfo().empty()) {
-      if (metadata.value().GetCleanInfo().empty()) {
-        return PluginCleanliness::unknown;
-      }
-      else {
-        return PluginCleanliness::clean;
-      }
-    }
-    else if (!metadata.value().GetCleanInfo().empty()) {
-      return PluginCleanliness::unknown;
-    }
+  if (!metadata.has_value()) {
+    return PluginCleanliness::unknown;
+  }
 
-    for (const auto& info : metadata.value().GetDirtyInfo()) {
-      if (info.ChooseInfo("en").GetText().find("Do not clean") != std::string::npos) {
-        return PluginCleanliness::do_not_clean;
-      }
+  auto dirtyInfo = metadata.value().GetDirtyInfo();
+  auto cleanInfo = metadata.value().GetCleanInfo();
+
+  if (dirtyInfo.empty() == cleanInfo.empty()) {
+    return PluginCleanliness::unknown;
+  }
+
+  if (!cleanInfo.empty()) {
+    return PluginCleanliness::clean;
+  }
+
+  for (const auto& info : dirtyInfo) {
+    if (info.ChooseInfo("en").GetText().find("Do not clean") != std::string::npos) {
+      return PluginCleanliness::do_not_clean;
     }
   }
 
-  return PluginCleanliness::unknown;
+  return PluginCleanliness::dirty;
 }
 }

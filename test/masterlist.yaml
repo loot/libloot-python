@@ -28,3 +28,27 @@ plugins:
       - Scripts
       - Stats
       - -C.Water
+
+  - name: clean_and_dirty.esp
+    dirty:
+      - crc: 0xDEADBEEF
+        util: '[TES4Edit v4.0.0](https://www.nexusmods.com/oblivion/mods/11536)'
+    clean:
+      - crc: 0xFEEDFACE
+        util: 'TES4Edit v4.0.0'
+
+  - name: clean.esp
+    clean:
+      - crc: 0xFEEDFACE
+        util: 'TES4Edit v4.0.0'
+
+  - name: dirty.esp
+    dirty:
+      - crc: 0xDEADBEEF
+        util: '[TES4Edit v4.0.0](https://www.nexusmods.com/oblivion/mods/11536)'
+
+  - name: do_not_clean.esp
+    dirty:
+      - crc: 0xDEADBEEF
+        util: '[TES4Edit v4.0.0](https://www.nexusmods.com/oblivion/mods/11536)'
+        info: 'Do not clean. This plugin is intentionally left dirty.'
