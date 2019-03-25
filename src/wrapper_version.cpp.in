@@ -27,7 +27,7 @@
 namespace loot {
 const unsigned int WrapperVersion::major = 4;
 const unsigned int WrapperVersion::minor = 0;
-const unsigned int WrapperVersion::patch = 1;
+const unsigned int WrapperVersion::patch = 2;
 const std::string WrapperVersion::revision = "@GIT_COMMIT_STRING@";
 
 std::string WrapperVersion::string() {
