@@ -38,9 +38,8 @@ build:
   project: 'c:\projects\loot-api-python\build\loot_api_python.sln'
 
 test_script:
-  - cd %APPVEYOR_BUILD_FOLDER%\build\%CONFIGURATION%
-  - ps: $env:ARCHITECTURE=$env:PLATFORM.Substring($env:PLATFORM.Length - 2)
-  - py -%PYTHON_VERSION%-%ARCHITECTURE% -m unittest test
+  - cd %APPVEYOR_BUILD_FOLDER%\build
+  - ctest -C %CONFIGURATION%
 
 after_test:
   - cd %APPVEYOR_BUILD_FOLDER%\build
