@@ -1,5 +1,5 @@
 
-cmake_minimum_required (VERSION 2.8.12)
+cmake_minimum_required (VERSION 3.1)
 project (loot_api_python)
 include(ExternalProject)
 
@@ -54,7 +54,7 @@ add_subdirectory(${PYBIND11_EXTRACTED_PATH})
 #######################################
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    if (NOT "${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)")
+    if (NOT "${CMAKE_GENERATOR_PLATFORM}" MATCHES "x64")
         set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.7/libloot-0.14.7-0-g1878d48_dev-win32.7z")
     else()
         set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.7/libloot-0.14.7-0-g1878d48_dev-win64.7z")
