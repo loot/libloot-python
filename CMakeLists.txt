@@ -14,6 +14,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Get Build Revision
 ##############################
 
+set(LIBLOOT_PY_VERSION_MAJOR 4)
+set(LIBLOOT_PY_VERSION_MINOR 0)
+set(LIBLOOT_PY_VERSION_PATCH 2)
+
 find_package(Git)
 
 IF (GIT_FOUND)
@@ -25,10 +29,12 @@ ELSE()
     SET (GIT_COMMIT_STRING "unknown")
 ENDIF ()
 
+message(STATUS "LOOT API Python version: ${LIBLOOT_PY_VERSION_MAJOR}.${LIBLOOT_PY_VERSION_MINOR}.${LIBLOOT_PY_VERSION_PATCH}")
 message(STATUS "Git revision: ${GIT_COMMIT_STRING}")
 
 # Write to file.
 configure_file("${CMAKE_SOURCE_DIR}/src/wrapper_version.cpp.in" "${CMAKE_BINARY_DIR}/generated/wrapper_version.cpp" @ONLY)
+configure_file("${CMAKE_SOURCE_DIR}/python/setup.py" "${CMAKE_BINARY_DIR}/generated/setup.py" @ONLY)
 
 #######################################
 # pybind11
@@ -117,17 +123,23 @@ add_test(NAME python
 ########################################
 
 install(TARGETS loot_api
-        DESTINATION "."
+        DESTINATION "loot_api"
         CONFIGURATIONS Release RelWithDebInfo)
 
 install(FILES "${LIBLOOT_EXTRACTED_PATH}/${LIBLOOT_SHARED_LIBRARY}"
-        "${CMAKE_SOURCE_DIR}/docs/README.md"
+        "${CMAKE_SOURCE_DIR}/python/loot_api/__init__.py"
+        DESTINATION "loot_api"
+        CONFIGURATIONS Release RelWithDebInfo)
+
+install(FILES "${CMAKE_SOURCE_DIR}/docs/README.md"
+        "${CMAKE_BINARY_DIR}/generated/setup.py"
+        "${CMAKE_SOURCE_DIR}/LICENSE"
         DESTINATION "."
         CONFIGURATIONS Release RelWithDebInfo)
 
 IF (MSVC)
     install(FILES $<TARGET_PDB_FILE:loot_api>
-            DESTINATION .
+            DESTINATION "loot_api"
             OPTIONAL
             CONFIGURATIONS RelWithDebInfo
             RENAME loot_api_python.pdb)
@@ -155,12 +167,7 @@ ELSE()
     SET (GIT_DESCRIBE_STRING "unknown-version")
 ENDIF ()
 
-if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set(CPACK_GENERATOR "7Z")
-else()
-    set(CPACK_GENERATOR "TXZ")
-endif()
-
+set(CPACK_GENERATOR "ZIP")
 set(CPACK_PACKAGE_VERSION "${GIT_DESCRIBE_STRING}-python$ENV{PYTHON_VERSION}")
 set(CPACK_PACKAGE_DIRECTORY "${CMAKE_BINARY_DIR}/package")
 

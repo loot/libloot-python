@@ -44,12 +44,10 @@ test_script:
 after_test:
   - cd %APPVEYOR_BUILD_FOLDER%\build
   - cpack -C %CONFIGURATION%
-  # AppVeyor checks out a specific commit, but that means the archive script
-  # can't tell which branch it's on, so rename the 7z archives.
   - ps: $env:GIT_DESCRIBE = ((git describe --tags --long --always) | Out-String) -replace "`n|`r", ""
 
 artifacts:
-  - path: build\package\loot_api_python-$(GIT_DESCRIBE)_$(APPVEYOR_REPO_BRANCH)-python$(PYTHON_VERSION)-win$(ARCHITECTURE).7z
+  - path: build\package\loot_api_python-$(GIT_DESCRIBE)_$(APPVEYOR_REPO_BRANCH)-python$(PYTHON_VERSION)-win$(ARCHITECTURE).zip
     name: loot_api_python
 
 deploy:
