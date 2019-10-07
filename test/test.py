@@ -34,10 +34,12 @@ class GameFixture(unittest.TestCase):
         data_path = os.path.join(self.game_path, 'Data')
         master_file = os.path.join(data_path, 'Oblivion.esm')
 
-        os.makedirs(data_path)
+        if not os.path.exists(data_path):
+            os.makedirs(data_path)
         open(master_file, 'a').close()
 
-        os.makedirs(self.local_path)
+        if not os.path.exists(self.local_path):
+            os.makedirs(self.local_path)
 
     def tearDown(self):
         shutil.rmtree(self.game_path)

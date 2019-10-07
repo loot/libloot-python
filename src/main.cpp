@@ -159,6 +159,13 @@ void bindClasses(pybind11::module& module) {
 void bindFunctions(pybind11::module& module) {
   module.def("set_logging_callback", &SetLoggingCallback);
 
+  // Need to clear the stored logging callback when exiting, or Python will
+  // hang because the callback pointer is still stored by libloot.
+  auto atexit = pybind11::module::import("atexit");
+  atexit.attr("register")(pybind11::cpp_function([]() {
+    SetLoggingCallback(nullptr);
+  }));
+
   module.def("is_compatible", &IsCompatible);
 
   module.def("initialise_locale", &InitialiseLocale, arg("id") = "");

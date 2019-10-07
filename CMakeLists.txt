@@ -40,7 +40,7 @@ configure_file("${CMAKE_SOURCE_DIR}/python/setup.py" "${CMAKE_BINARY_DIR}/genera
 # pybind11
 #######################################
 
-set(PYBIND11_VERSION "2.2.4")
+set(PYBIND11_VERSION "2.4.2")
 set(PYBIND11_URL "https://github.com/pybind/pybind11/archive/v${PYBIND11_VERSION}.tar.gz")
 set(PYBIND11_DOWNLOAD_PATH "${EXTERNAL_PROJECTS_PATH}/pybind11-${PYBIND11_VERSION}.tar.gz")
 set(PYBIND11_EXTRACTED_PATH "${EXTERNAL_PROJECTS_PATH}/pybind11-${PYBIND11_VERSION}")
