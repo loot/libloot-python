@@ -28,8 +28,8 @@ build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
   - py -%PYTHON_VERSION_ARCH% ./setup.py sdist bdist_wheel
 
-before_test:
-  - ps: py -$env:PYTHON_VERSION_ARCH -m pip install (get-item .\dist\*.whl)
+# before_test:
+#   - ps: py -$env:PYTHON_VERSION_ARCH -m pip install (get-item .\dist\*.whl)
 
 test_script:
   - py -%PYTHON_VERSION_ARCH% ./test/test.py
