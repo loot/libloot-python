@@ -20,37 +20,28 @@ environment:
 
 install:
   - ps: (New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/Ortham/ci-scripts/2.0.0/delete_old_bintray_versions.py', "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py")
+  - ps: $env:PYTHON_VERSION_ARCH = $env:PYTHON_VERSION + "-" + $env:PLATFORM.substring($env:PLATFORM.length - 2)
+  - echo Choosing Python %PYTHON_VERSION_ARCH%
+  - py -%PYTHON_VERSION_ARCH% -m pip install wheel
 
-before_build:
-  - ps: $env:PYTHON_DIRECTORY_VERSION=$env:PYTHON_VERSION.Replace(".", "")
+build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
-  - ps: mkdir build
-  - cd build
-  - ps: |
-      if ($env:PLATFORM -eq 'Win32') {
-        cmake .. -G "Visual Studio 15 2017" -DPYTHON_EXECUTABLE="C:\Python${env:PYTHON_DIRECTORY_VERSION}\python.exe"
-      } else {
-        cmake .. -G "Visual Studio 15 2017" -A x64 -DPYTHON_EXECUTABLE="C:\Python${env:PYTHON_DIRECTORY_VERSION}-x64\python.exe"
-      }
+  - py -%PYTHON_VERSION_ARCH% ./setup.py sdist bdist_wheel
 
-build:
-  verbosity: minimal
-  project: 'c:\projects\loot-api-python\build\loot_api_python.sln'
+before_test:
+  - ps: py -$env:PYTHON_VERSION_ARCH -m pip install (get-item .\dist\*.whl)
 
 test_script:
-  - cd %APPVEYOR_BUILD_FOLDER%\build
-  - ctest -C %CONFIGURATION%
+  - py -%PYTHON_VERSION_ARCH% ./test/test.py
 
 after_test:
-  - cd %APPVEYOR_BUILD_FOLDER%\build
-  - cpack -C %CONFIGURATION%
-  # AppVeyor checks out a specific commit, but that means the archive script
-  # can't tell which branch it's on, so rename the 7z archives.
   - ps: $env:GIT_DESCRIBE = ((git describe --tags --long --always) | Out-String) -replace "`n|`r", ""
 
 artifacts:
-  - path: build\package\loot_api_python-$(GIT_DESCRIBE)_$(APPVEYOR_REPO_BRANCH)-python$(PYTHON_VERSION)-win$(ARCHITECTURE).7z
-    name: loot_api_python
+  - path: 'dist/*.whl'
+    name: wheel
+  - path: 'dist/*.tar.gz'
+    name: source
 
 deploy:
   - provider: BinTray
@@ -62,7 +53,19 @@ deploy:
     package: loot-api-python
     version: $(GIT_DESCRIBE)_$(APPVEYOR_REPO_BRANCH)
     publish: true
-    artifact: loot_api_python
+    artifact: wheel
+
+  - provider: BinTray
+    username: wrinklyninja
+    api_key:
+      secure: PgsEA6TjHVf718zMnK7J/fT1hUAVNKBeWhpYgYaeCyeZk37VT4Ics6j7+B7ElLEr
+    subject: loot
+    repo: snapshots
+    package: loot-api-python
+    version: $(GIT_DESCRIBE)_$(APPVEYOR_REPO_BRANCH)
+    publish: true
+    override: true
+    artifact: source
 
   - provider: GitHub
     tag: $(APPVEYOR_REPO_TAG_NAME)

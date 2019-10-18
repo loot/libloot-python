@@ -1,5 +1,8 @@
 # Build directory
 build/
+dist/
+*.egg-info/
+
 # =========================
 # Operating System Files
 # =========================
