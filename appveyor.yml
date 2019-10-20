@@ -46,6 +46,7 @@ after_test:
   - cpack -C %CONFIGURATION%
   - ps: $env:GIT_DESCRIBE = ((git describe --tags --long --always) | Out-String) -replace "`n|`r", ""
   - ps: $env:PACKAGE_VERSION = $env:GIT_DESCRIBE + "_" + ($env:APPVEYOR_REPO_BRANCH.replace("/", "-"))
+  - ps: $env:ARCHITECTURE = $env:PLATFORM.substring($env:PLATFORM.length - 2)
 
 artifacts:
   - path: build\package\loot_api_python-$(PACKAGE_VERSION)-python$(PYTHON_VERSION)-win$(ARCHITECTURE).zip
