@@ -45,9 +45,10 @@ after_test:
   - cd %APPVEYOR_BUILD_FOLDER%\build
   - cpack -C %CONFIGURATION%
   - ps: $env:GIT_DESCRIBE = ((git describe --tags --long --always) | Out-String) -replace "`n|`r", ""
+  - ps: $env:PACKAGE_VERSION = $env:GIT_DESCRIBE + "_" + ($env:APPVEYOR_REPO_BRANCH.replace("/", "-"))
 
 artifacts:
-  - path: build\package\loot_api_python-$(GIT_DESCRIBE)_$(APPVEYOR_REPO_BRANCH)-python$(PYTHON_VERSION)-win$(ARCHITECTURE).zip
+  - path: build\package\loot_api_python-$(PACKAGE_VERSION)-python$(PYTHON_VERSION)-win$(ARCHITECTURE).zip
     name: loot_api_python
 
 deploy:
@@ -58,7 +59,7 @@ deploy:
     subject: loot
     repo: snapshots
     package: loot-api-python
-    version: $(GIT_DESCRIBE)_$(APPVEYOR_REPO_BRANCH)
+    version: $(PACKAGE_VERSION)
     publish: true
     artifact: loot_api_python
 
