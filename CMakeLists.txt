@@ -1,6 +1,6 @@
 
 cmake_minimum_required (VERSION 3.1)
-project (loot_api_python)
+project (libloot-python)
 include(ExternalProject)
 
 set(EXTERNAL_PROJECTS_PATH "${CMAKE_BINARY_DIR}/external/src")
@@ -29,7 +29,7 @@ ELSE()
     SET (GIT_COMMIT_STRING "unknown")
 ENDIF ()
 
-message(STATUS "LOOT API Python version: ${LIBLOOT_PY_VERSION_MAJOR}.${LIBLOOT_PY_VERSION_MINOR}.${LIBLOOT_PY_VERSION_PATCH}")
+message(STATUS "libloot-python version: ${LIBLOOT_PY_VERSION_MAJOR}.${LIBLOOT_PY_VERSION_MINOR}.${LIBLOOT_PY_VERSION_PATCH}")
 message(STATUS "Git revision: ${GIT_COMMIT_STRING}")
 
 # Write to file.
@@ -56,7 +56,7 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E tar xfz ${PYBIND11_DOWNLOAD_PATH}
 add_subdirectory(${PYBIND11_EXTRACTED_PATH})
 
 #######################################
-# LOOT API
+# libloot
 #######################################
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
@@ -88,16 +88,20 @@ set(LIBLOOT_SHARED_LIBRARY "${CMAKE_SHARED_LIBRARY_PREFIX}loot${CMAKE_SHARED_LIB
 # Python Module
 #######################################
 
-pybind11_add_module(loot_api  "${CMAKE_SOURCE_DIR}/src/main.cpp"
+pybind11_add_module(libloot-python  "${CMAKE_SOURCE_DIR}/src/main.cpp"
                               "${CMAKE_SOURCE_DIR}/src/convenience.cpp"
                               "${CMAKE_BINARY_DIR}/generated/wrapper_version.cpp")
 
-add_dependencies(loot_api libloot)
+# Set the target output name to loot to follow common Python library naming
+# conventions (no lib, no -python).
+set_target_properties(libloot-python PROPERTIES OUTPUT_NAME loot)
+
+add_dependencies(libloot-python libloot)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries(loot_api PRIVATE ${LIBLOOT_STATIC_LIBRARY})
+    target_link_libraries(libloot-python PRIVATE ${LIBLOOT_STATIC_LIBRARY})
 else()
-    target_link_libraries(loot_api PRIVATE ${LIBLOOT_SHARED_LIBRARY})
+    target_link_libraries(libloot-python PRIVATE ${LIBLOOT_SHARED_LIBRARY})
 endif()
 
 ########################################
@@ -106,29 +110,29 @@ endif()
 
 find_package(PythonInterp REQUIRED)
 
-# Copy the API binary to the build directory.
-add_custom_command(TARGET loot_api POST_BUILD
+# Copy the libloot binary to the build directory.
+add_custom_command(TARGET libloot-python POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${LIBLOOT_EXTRACTED_PATH}/${LIBLOOT_SHARED_LIBRARY}"
-        "$<TARGET_FILE_DIR:loot_api>/${LIBLOOT_SHARED_LIBRARY}")
+        "$<TARGET_FILE_DIR:libloot-python>/${LIBLOOT_SHARED_LIBRARY}")
 
 enable_testing()
 
 add_test(NAME python
-         WORKING_DIRECTORY $<TARGET_FILE_DIR:loot_api>
+         WORKING_DIRECTORY $<TARGET_FILE_DIR:libloot-python>
          COMMAND "${PYTHON_EXECUTABLE}" ${CMAKE_SOURCE_DIR}/test/test.py)
 
 ########################################
 # Install
 ########################################
 
-install(TARGETS loot_api
-        DESTINATION "loot_api"
+install(TARGETS libloot-python
+        DESTINATION "loot"
         CONFIGURATIONS Release RelWithDebInfo)
 
 install(FILES "${LIBLOOT_EXTRACTED_PATH}/${LIBLOOT_SHARED_LIBRARY}"
-        "${CMAKE_SOURCE_DIR}/python/loot_api/__init__.py"
-        DESTINATION "loot_api"
+        "${CMAKE_SOURCE_DIR}/python/loot/__init__.py"
+        DESTINATION "loot"
         CONFIGURATIONS Release RelWithDebInfo)
 
 install(FILES "${CMAKE_SOURCE_DIR}/docs/README.md"
@@ -138,11 +142,11 @@ install(FILES "${CMAKE_SOURCE_DIR}/docs/README.md"
         CONFIGURATIONS Release RelWithDebInfo)
 
 IF (MSVC)
-    install(FILES $<TARGET_PDB_FILE:loot_api>
-            DESTINATION "loot_api"
+    install(FILES $<TARGET_PDB_FILE:libloot-python>
+            DESTINATION "loot"
             OPTIONAL
             CONFIGURATIONS RelWithDebInfo
-            RENAME loot_api_python.pdb)
+            RENAME libloot-python.pdb)
 ENDIF ()
 
 ########################################

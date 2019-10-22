@@ -9,15 +9,15 @@ import unittest
 
 sys.path.append(os.getcwd())
 
-from loot_api import Version
-from loot_api import WrapperVersion
-from loot_api import GameType
-from loot_api import SimpleMessage
-from loot_api import MessageType
-from loot_api import PluginCleanliness
-from loot_api import create_game_handle
-from loot_api import is_compatible
-from loot_api import set_logging_callback
+from loot import Version
+from loot import WrapperVersion
+from loot import GameType
+from loot import SimpleMessage
+from loot import MessageType
+from loot import PluginCleanliness
+from loot import create_game_handle
+from loot import is_compatible
+from loot import set_logging_callback
 
 def logging_callback(level, message):
     pass

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# LOOT API Python Module documentation build configuration file, created by
+# libloot-python documentation build configuration file, created by
 # sphinx-quickstart on Mon Aug 15 07:11:32 2016.
 #
 # This file is execfile()d with the current directory set to its
@@ -54,7 +54,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'LOOT API Python Module'
+project = u'libloot-python'
 copyright = u'2019, WrinklyNinja'
 author = u'WrinklyNinja'
 
@@ -139,7 +139,7 @@ html_theme = 'sphinx_rtd_theme'
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
 #
-# html_title = u'LOOT API Python Module v;atest'
+# html_title = u'libloot-python v;atest'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #
@@ -265,7 +265,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'LOOTAPIPythonModule.tex', u'LOOT API Python Module Documentation',
+    (master_doc, 'libloot-python.tex', u'libloot-python Documentation',
      u'WrinklyNinja', 'manual'),
 ]
 
@@ -307,7 +307,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'lootapipythonmodule', u'LOOT API Python Module Documentation',
+    (master_doc, 'libloot-python', u'libloot-python Documentation',
      [author], 1)
 ]
 
@@ -322,8 +322,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'LOOTAPIPythonModule', u'LOOT API Python Module Documentation',
-     author, 'LOOTAPIPythonModule', 'One line description of project.',
+    (master_doc, 'libloot-python', u'libloot-python Documentation',
+     author, 'libloot-python', 'One line description of project.',
      'Miscellaneous'),
 ]
 

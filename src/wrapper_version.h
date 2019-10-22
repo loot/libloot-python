@@ -22,8 +22,8 @@ along with LOOT.  If not, see
 <https://www.gnu.org/licenses/>.
 */
 
-#ifndef LOOT_API_PYTHON_WRAPPER_VERSION
-#define LOOT_API_PYTHON_WRAPPER_VERSION
+#ifndef LIBLOOT_PYTHON_WRAPPER_VERSION
+#define LIBLOOT_PYTHON_WRAPPER_VERSION
 
 #include <string>
 

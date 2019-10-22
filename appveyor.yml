@@ -35,7 +35,7 @@ before_build:
 
 build:
   verbosity: minimal
-  project: 'c:\projects\loot-api-python\build\loot_api_python.sln'
+  project: 'c:\projects\libloot-python\build\libloot-python.sln'
 
 test_script:
   - cd %APPVEYOR_BUILD_FOLDER%\build
@@ -49,8 +49,8 @@ after_test:
   - ps: $env:ARCHITECTURE = $env:PLATFORM.substring($env:PLATFORM.length - 2)
 
 artifacts:
-  - path: build\package\loot_api_python-$(PACKAGE_VERSION)-python$(PYTHON_VERSION)-win$(ARCHITECTURE).zip
-    name: loot_api_python
+  - path: build\package\libloot-python-$(PACKAGE_VERSION)-python$(PYTHON_VERSION)-win$(ARCHITECTURE).zip
+    name: libloot-python
 
 deploy:
   - provider: BinTray
@@ -59,22 +59,22 @@ deploy:
       secure: PgsEA6TjHVf718zMnK7J/fT1hUAVNKBeWhpYgYaeCyeZk37VT4Ics6j7+B7ElLEr
     subject: loot
     repo: snapshots
-    package: loot-api-python
+    package: libloot-python
     version: $(PACKAGE_VERSION)
     publish: true
-    artifact: loot_api_python
+    artifact: libloot-python
 
   - provider: GitHub
     tag: $(APPVEYOR_REPO_TAG_NAME)
-    release: LOOT API Python Module v$(APPVEYOR_REPO_TAG_NAME)
+    release: libloot-python v$(APPVEYOR_REPO_TAG_NAME)
     description: |
       Requires Windows 7 or later and the [MSVC 2017 x86 redistributable](https://download.visualstudio.microsoft.com/download/pr/749aa419-f9e4-4578-a417-a43786af205e/d59197078cc425377be301faba7dd87a/vc_redist.x86.exe), and [7-Zip](http://www.7-zip.org/) to extract the archive.
     auth_token:
       secure: yDqT5l/e5MntbW99V6+MHlfFgNv+UIogFfeyUVqtFk5lFRB/dAraLLwKCLl6y+DH
-    artifact: loot_api_python
+    artifact: libloot-python
     draft: false
     on:
       appveyor_repo_tag: true
 
 on_success:
-  - ps: python "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py" -g loot/loot-api-python -b loot/snapshots/loot-api-python -u wrinklyninja -k $env:bintray_auth_token -t $env:github_auth_token -n 30
+  - ps: python "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py" -g loot/libloot-python -b loot/snapshots/libloot-python -u wrinklyninja -k $env:bintray_auth_token -t $env:github_auth_token -n 30

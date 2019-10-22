@@ -22,8 +22,8 @@ along with LOOT.  If not, see
 <https://www.gnu.org/licenses/>.
 */
 
-#ifndef LOOT_API_PYTHON_CONVENIENCE
-#define LOOT_API_PYTHON_CONVENIENCE
+#ifndef LIBLOOT_PYTHON_CONVENIENCE
+#define LIBLOOT_PYTHON_CONVENIENCE
 
 #include <memory>
 

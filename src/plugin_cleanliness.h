@@ -21,11 +21,11 @@
     along with LOOT.  If not, see
     <https://www.gnu.org/licenses/>.
     */
-#ifndef LOOT_PLUGIN_CLEANLINESS
-#define LOOT_PLUGIN_CLEANLINESS
+#ifndef LIBLOOT_PYTHON_PLUGIN_CLEANLINESS
+#define LIBLOOT_PYTHON_PLUGIN_CLEANLINESS
 
 /**
- * The namespace used by the LOOT API.
+ * The namespace used by libloot.
  */
 namespace loot {
 /**

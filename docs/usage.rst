@@ -7,8 +7,8 @@ Installing the wrapper
 
 Build archives contain two binaries:
 
-* ``loot_api.pyd`` is the Python wrapper
-* ``loot_api.dll`` is the C++ API DLL that the Python wrapper was built against.
+* ``loot.*.pyd`` is the Python wrapper
+* ``loot.dll`` is the C++ library DLL that the Python wrapper was built against.
 
 The C++ DLL requires the `Visual C++ 2017 Redistributable (x86)`_
 to be installed.
@@ -27,10 +27,10 @@ Checking Compatibility
 To check if the module loaded is compatible with the version of the API that you
 developed against::
 
-  >>> import loot_api
-  >>> loot_api.is_compatible(0,14,0)
+  >>> import loot
+  >>> loot.is_compatible(0,14,0)
   True
-  >>> loot_api.is_compatible(0,9,0)
+  >>> loot.is_compatible(0,9,0)
   False
 
 Getting a Plugin's Bash Tag Suggestions
@@ -38,8 +38,8 @@ Getting a Plugin's Bash Tag Suggestions
 
 To get a plugin's Bash Tag suggestions from a ``masterlist.yaml`` metadata file::
 
-  >>> import loot_api
-  >>> db = loot_api.create_game_handle(loot_api.GameType.tes4, 'C:\\path\\to\\oblivion\\directory')
+  >>> import loot
+  >>> db = loot.create_game_handle(loot.GameType.tes4, 'C:\\path\\to\\oblivion\\directory')
   >>> db.load_lists('masterlist.yaml')
   >>> tags = db.get_plugin_tags(u'Unofficial Oblivion Patch.esp')
   >>> tags.added

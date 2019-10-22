@@ -67,15 +67,15 @@ if not is_msvc_redist_installed(*MSVC_MIN_VERSION):
 
 # The version string is substituted in by CMake.
 setup(
-    name="loot-api",
+    name="libloot-python",
     version="@LIBLOOT_PY_VERSION_MAJOR@.@LIBLOOT_PY_VERSION_MINOR@.@LIBLOOT_PY_VERSION_PATCH@",
-    description="A Python module that wraps the LOOT API.",
+    description="A Python module that wraps libloot.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/loot/loot-api-python",
+    url="https://github.com/loot/libloot-python",
     packages=find_packages(),
     include_package_data=True,
-    package_data={"loot_api": ["loot_api*.pyd", "loot.dll"]},
+    package_data={"loot": ["loot*.pyd", "loot.dll"]},
     distclass=BinaryDistribution,
     classifiers=[
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',

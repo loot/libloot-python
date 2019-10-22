@@ -21,8 +21,8 @@
     along with LOOT.  If not, see
     <https://www.gnu.org/licenses/>.
     */
-#ifndef LOOT_PLUGIN_TAGS
-#define LOOT_PLUGIN_TAGS
+#ifndef LIBLOOT_PYTHON_PLUGIN_TAGS
+#define LIBLOOT_PYTHON_PLUGIN_TAGS
 
 #include <set>
 #include <string>
