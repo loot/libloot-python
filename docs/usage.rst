@@ -39,7 +39,6 @@ Getting a Plugin's Bash Tag Suggestions
 To get a plugin's Bash Tag suggestions from a ``masterlist.yaml`` metadata file::
 
   >>> import loot_api
-  >>> loot_api.initialise_locale()
   >>> db = loot_api.create_game_handle(loot_api.GameType.tes4, 'C:\\path\\to\\oblivion\\directory')
   >>> db.load_lists('masterlist.yaml')
   >>> tags = db.get_plugin_tags(u'Unofficial Oblivion Patch.esp')

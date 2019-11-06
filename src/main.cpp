@@ -168,8 +168,6 @@ void bindFunctions(pybind11::module& module) {
 
   module.def("is_compatible", &IsCompatible);
 
-  module.def("initialise_locale", &InitialiseLocale, arg("id") = "");
-
   module.def("create_game_handle", &py::CreateGameHandle,
     arg("game"),
     arg("game_path"),

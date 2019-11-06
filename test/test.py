@@ -18,13 +18,11 @@ from loot_api import PluginCleanliness
 from loot_api import create_game_handle
 from loot_api import is_compatible
 from loot_api import set_logging_callback
-from loot_api import initialise_locale
 
 def logging_callback(level, message):
     pass
 
 set_logging_callback(logging_callback)
-initialise_locale()
 
 class GameFixture(unittest.TestCase):
     game_path = os.path.join(u'.', u'Oblivion')
@@ -48,14 +46,14 @@ class GameFixture(unittest.TestCase):
 class TestLootApi(GameFixture):
     def test_is_compatible(self):
         self.assertFalse(is_compatible(0, 9, 0))
-        self.assertTrue(is_compatible(0, 14, 0))
+        self.assertTrue(is_compatible(0, 15, 0))
 
     def test_version(self):
         self.assertEqual(Version.major, 0)
-        self.assertEqual(Version.minor, 14)
-        self.assertEqual(Version.patch, 7)
+        self.assertEqual(Version.minor, 15)
+        self.assertEqual(Version.patch, 0)
         self.assertNotEqual(Version.revision, u'')
-        self.assertEqual(Version.string(), "0.14.7")
+        self.assertEqual(Version.string(), "0.15.0")
 
     def test_wrapper_version(self):
         self.assertEqual(WrapperVersion.major, 4)
