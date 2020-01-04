@@ -85,6 +85,20 @@ set(LIBLOOT_STATIC_LIBRARY "${CMAKE_STATIC_LIBRARY_PREFIX}loot${CMAKE_STATIC_LIB
 set(LIBLOOT_SHARED_LIBRARY "${CMAKE_SHARED_LIBRARY_PREFIX}loot${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
 #######################################
+# testing-plugins
+#######################################
+
+# This is a bit messy because the testing-plugins aren't actually required to
+# build libloot-python, but having them as a dependency is the easiest way to
+# manage downloading and moving them to the expected location.
+ExternalProject_Add(testing-plugins
+                    PREFIX "external"
+                    URL "https://github.com/Ortham/testing-plugins/archive/1.4.1.tar.gz"
+                    CONFIGURE_COMMAND ""
+                    BUILD_COMMAND ""
+                    INSTALL_COMMAND "")
+
+#######################################
 # Python Module
 #######################################
 
@@ -96,7 +110,7 @@ pybind11_add_module(libloot-python  "${CMAKE_SOURCE_DIR}/src/main.cpp"
 # conventions (no lib, no -python).
 set_target_properties(libloot-python PROPERTIES OUTPUT_NAME loot)
 
-add_dependencies(libloot-python libloot)
+add_dependencies(libloot-python libloot testing-plugins)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries(libloot-python PRIVATE ${LIBLOOT_STATIC_LIBRARY})
@@ -115,6 +129,13 @@ add_custom_command(TARGET libloot-python POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${LIBLOOT_EXTRACTED_PATH}/${LIBLOOT_SHARED_LIBRARY}"
         "$<TARGET_FILE_DIR:libloot-python>/${LIBLOOT_SHARED_LIBRARY}")
+
+# Copy testing plugins
+ExternalProject_Get_Property(testing-plugins SOURCE_DIR)
+add_custom_command(TARGET libloot-python POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${SOURCE_DIR}
+        $<TARGET_FILE_DIR:libloot-python>)
 
 enable_testing()
 

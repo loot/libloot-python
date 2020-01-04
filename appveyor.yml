@@ -20,6 +20,9 @@ environment:
 
 install:
   - ps: (New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/Ortham/ci-scripts/2.0.0/delete_old_bintray_versions.py', "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py")
+  - ps: (New-Object Net.WebClient).DownloadFile('https://github.com/WrinklyNinja/testing-plugins/archive/1.4.1.zip', "$PWD/1.4.1.zip")
+  - 7z x 1.4.1.zip
+  - mv testing-plugins-1.4.1 testing-plugins
 
 before_build:
   - ps: $env:PYTHON_DIRECTORY_VERSION=$env:PYTHON_VERSION.Replace(".", "")

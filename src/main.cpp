@@ -149,6 +149,12 @@ void bindInterfaceClasses(pybind11::module& module) {
       pybind11::call_guard<pybind11::gil_scoped_release>())
     .def("get_database",
       &GameInterface::GetDatabase,
+      pybind11::call_guard<pybind11::gil_scoped_release>())
+    .def("load_plugins",
+      &GameInterface::LoadPlugins,
+      pybind11::call_guard<pybind11::gil_scoped_release>())
+    .def("get_plugin",
+      &GameInterface::GetPlugin,
       pybind11::call_guard<pybind11::gil_scoped_release>());
 
   class_<DatabaseInterface, std::shared_ptr<DatabaseInterface>>(module, "DatabaseInterface")
@@ -181,6 +187,20 @@ void bindInterfaceClasses(pybind11::module& module) {
       pybind11::call_guard<pybind11::gil_scoped_release>())
     .def("write_minimal_list",
       &py::WriteMinimalList,
+      pybind11::call_guard<pybind11::gil_scoped_release>());
+
+  class_<PluginInterface, std::shared_ptr<PluginInterface>>(module, "PluginInterface")
+    .def_property_readonly("name",
+      &PluginInterface::GetName,
+      pybind11::call_guard<pybind11::gil_scoped_release>())
+    .def("is_master",
+      &PluginInterface::IsMaster,
+      pybind11::call_guard<pybind11::gil_scoped_release>())
+    .def("is_light_master",
+      &PluginInterface::IsLightMaster,
+      pybind11::call_guard<pybind11::gil_scoped_release>())
+    .def("is_valid_as_light_master",
+      &PluginInterface::IsValidAsLightMaster,
       pybind11::call_guard<pybind11::gil_scoped_release>());
 }
 

@@ -27,21 +27,20 @@ set_logging_callback(logging_callback)
 class GameFixture(unittest.TestCase):
     game_path = os.path.join(u'.', u'Oblivion')
     local_path = os.path.join(u'.', u'local')
+    master_filename = u'Oblivion.esm'
 
     def setUp(self):
-        data_path = os.path.join(self.game_path, 'Data')
-        master_file = os.path.join(data_path, 'Oblivion.esm')
-
-        if not os.path.exists(data_path):
-            os.makedirs(data_path)
-        open(master_file, 'a').close()
+        open(self.master_file_path(), 'a').close()
 
         if not os.path.exists(self.local_path):
             os.makedirs(self.local_path)
 
     def tearDown(self):
-        shutil.rmtree(self.game_path)
+        os.remove(self.master_file_path())
         shutil.rmtree(self.local_path)
+
+    def master_file_path(self):
+        return os.path.join(self.game_path, 'Data', self.master_filename)
 
 class TestLootApi(GameFixture):
     def test_is_compatible(self):
@@ -67,6 +66,61 @@ class TestLootApi(GameFixture):
         game = create_game_handle(GameType.tes4, self.game_path, self.local_path)
         db = game.get_database()
         self.assertNotEqual(db, None)
+
+class TestGameInterface(GameFixture):
+    def setUp(self):
+        super(TestGameInterface, self).setUp()
+
+        self.game = create_game_handle(GameType.tes4, self.game_path, self.local_path)
+
+    def test_load_plugins(self):
+        self.game.load_plugins([u'Blank.esm'], True)
+        self.game.load_plugins([u'Blank.esm'], False)
+
+    def test_get_plugin(self):
+        self.game.load_plugins([u'Blank.esm'], True)
+        plugin = self.game.get_plugin(u'Blank.esm')
+
+        self.assertNotEqual(plugin, None)
+
+class TestPluginInterface(GameFixture):
+    game_path = os.path.join(u'.', u'SkyrimSE')
+    master_filename = u'Skyrim.esm'
+
+    def setUp(self):
+        super(TestPluginInterface, self).setUp()
+
+        self.game = create_game_handle(GameType.tes5se, self.game_path, self.local_path)
+        self.game.load_plugins([u'Blank.esm', u'Blank.esl'], False)
+
+    def test_name(self):
+        plugin = self.game.get_plugin(u'Blank.esm')
+
+        self.assertNotEqual(plugin, None)
+        self.assertEqual(plugin.name, u'Blank.esm')
+
+    def test_is_master(self):
+        plugin = self.game.get_plugin(u'Blank.esm')
+
+        self.assertNotEqual(plugin, None)
+        self.assertTrue(plugin.is_master())
+
+    def test_is_light_master(self):
+        plugin = self.game.get_plugin(u'Blank.esm')
+
+        self.assertNotEqual(plugin, None)
+        self.assertFalse(plugin.is_light_master())
+
+        plugin = self.game.get_plugin(u'Blank.esl')
+
+        self.assertNotEqual(plugin, None)
+        self.assertTrue(plugin.is_light_master())
+
+    def test_is_valid_as_light_master(self):
+        plugin = self.game.get_plugin(u'Blank.esm')
+
+        self.assertNotEqual(plugin, None)
+        self.assertTrue(plugin.is_valid_as_light_master())
 
 class TestDatabaseInterface(GameFixture):
     masterlist_path = os.path.join(os.path.dirname(__file__), u'masterlist.yaml')
