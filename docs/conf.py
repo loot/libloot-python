@@ -22,7 +22,7 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../build/Release'))
+sys.path.insert(0, os.path.abspath('../build/RelWithDebInfo'))
 
 # -- General configuration ------------------------------------------------
 
@@ -34,6 +34,7 @@ sys.path.insert(0, os.path.abspath('../build/Release'))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
 ]
 
@@ -346,5 +347,6 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    'loot_api': ('http://loot.readthedocs.io/en/0.14.7/', None),
+    'loot': ('https://loot.readthedocs.io/en/0.15.0/', None),
+    'python': ('https://docs.python.org/3', None)
 }
