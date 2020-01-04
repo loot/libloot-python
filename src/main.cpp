@@ -58,6 +58,14 @@ bool UpdateMasterlist(std::shared_ptr<DatabaseInterface> db, std::string masterl
 MasterlistInfo GetMasterlistRevision(std::shared_ptr<DatabaseInterface> db, std::string masterlistPath, bool getShortId) {
   return db->GetMasterlistRevision(u8path(masterlistPath), getShortId);
 }
+
+void SetLoggingCallback(std::function<void(LogLevel, const char*)> callback) {
+  callback = [callback](LogLevel level, const char* message) {
+    pybind11::gil_scoped_acquire acquire;
+    callback(level, message);
+  };
+  loot::SetLoggingCallback(callback);
+}
 }
 
 void bindEnums(pybind11::module& module) {
@@ -109,7 +117,9 @@ void bindMetadataClasses(pybind11::module& module) {
     .def_readwrite("userlist_modified", &PluginTags::userlist_modified);
 
   class_<PluginMetadata>(module, "PluginMetadata")
-    .def("get_simple_messages", &PluginMetadata::GetSimpleMessages);
+    .def("get_simple_messages",
+      &PluginMetadata::GetSimpleMessages,
+      pybind11::call_guard<pybind11::gil_scoped_release>());
 }
 
 void bindVersionClasses(pybind11::module& module) {
@@ -118,36 +128,60 @@ void bindVersionClasses(pybind11::module& module) {
     .def_readonly_static("minor", &LootVersion::minor)
     .def_readonly_static("patch", &LootVersion::patch)
     .def_readonly_static("revision", &LootVersion::revision)
-    .def_static("string", LootVersion::GetVersionString);
+    .def_static("string",
+      LootVersion::GetVersionString,
+      pybind11::call_guard<pybind11::gil_scoped_release>());
 
   class_<WrapperVersion>(module, "WrapperVersion")
     .def_readonly_static("major", &WrapperVersion::major)
     .def_readonly_static("minor", &WrapperVersion::minor)
     .def_readonly_static("patch", &WrapperVersion::patch)
     .def_readonly_static("revision", &WrapperVersion::revision)
-    .def_static("string", WrapperVersion::string);
+    .def_static("string",
+      WrapperVersion::string,
+      pybind11::call_guard<pybind11::gil_scoped_release>());
 }
 
 void bindInterfaceClasses(pybind11::module& module) {
   class_<GameInterface, std::shared_ptr<GameInterface>>(module, "GameInterface")
-    .def("load_current_load_order_state", &GameInterface::LoadCurrentLoadOrderState)
-    .def("get_database", &GameInterface::GetDatabase);
+    .def("load_current_load_order_state",
+      &GameInterface::LoadCurrentLoadOrderState,
+      pybind11::call_guard<pybind11::gil_scoped_release>())
+    .def("get_database",
+      &GameInterface::GetDatabase,
+      pybind11::call_guard<pybind11::gil_scoped_release>());
 
   class_<DatabaseInterface, std::shared_ptr<DatabaseInterface>>(module, "DatabaseInterface")
-    .def("load_lists", &py::LoadLists, arg("masterlist_path"), arg("userlist_path") = "")
-    .def("update_masterlist", &py::UpdateMasterlist)
-    .def("get_masterlist_revision", &py::GetMasterlistRevision)
-    .def("get_plugin_metadata", &DatabaseInterface::GetPluginMetadata,
+    .def("load_lists",
+      &py::LoadLists,
+      arg("masterlist_path"),
+      arg("userlist_path") = "",
+      pybind11::call_guard<pybind11::gil_scoped_release>())
+    .def("update_masterlist",
+      &py::UpdateMasterlist,
+      pybind11::call_guard<pybind11::gil_scoped_release>())
+    .def("get_masterlist_revision",
+      &py::GetMasterlistRevision,
+      pybind11::call_guard<pybind11::gil_scoped_release>())
+    .def("get_plugin_metadata",
+      &DatabaseInterface::GetPluginMetadata,
       arg("plugin"),
       arg("includeUserMetadata") = true,
-      arg("evaluateConditions") = false)
-    .def("get_plugin_tags", &GetPluginTags,
+      arg("evaluateConditions") = false,
+      pybind11::call_guard<pybind11::gil_scoped_release>())
+    .def("get_plugin_tags",
+      &GetPluginTags,
       arg("plugin"),
-      arg("evaluateConditions") = false)
-    .def("get_plugin_cleanliness", &GetPluginCleanliness,
+      arg("evaluateConditions") = false,
+      pybind11::call_guard<pybind11::gil_scoped_release>())
+    .def("get_plugin_cleanliness",
+      &GetPluginCleanliness,
       arg("plugin"),
-      arg("evaluateConditions") = false)
-    .def("write_minimal_list", &py::WriteMinimalList);
+      arg("evaluateConditions") = false,
+      pybind11::call_guard<pybind11::gil_scoped_release>())
+    .def("write_minimal_list",
+      &py::WriteMinimalList,
+      pybind11::call_guard<pybind11::gil_scoped_release>());
 }
 
 void bindClasses(pybind11::module& module) {
@@ -157,7 +191,7 @@ void bindClasses(pybind11::module& module) {
 }
 
 void bindFunctions(pybind11::module& module) {
-  module.def("set_logging_callback", &SetLoggingCallback);
+  module.def("set_logging_callback", &py::SetLoggingCallback);
 
   // Need to clear the stored logging callback when exiting, or Python will
   // hang because the callback pointer is still stored by libloot.
@@ -166,12 +200,16 @@ void bindFunctions(pybind11::module& module) {
     SetLoggingCallback(nullptr);
   }));
 
-  module.def("is_compatible", &IsCompatible);
+  module.def("is_compatible",
+    &IsCompatible,
+    pybind11::call_guard<pybind11::gil_scoped_release>());
 
-  module.def("create_game_handle", &py::CreateGameHandle,
+  module.def("create_game_handle",
+    &py::CreateGameHandle,
     arg("game"),
     arg("game_path"),
-    arg("game_local_path") = "");
+    arg("game_local_path") = "",
+    pybind11::call_guard<pybind11::gil_scoped_release>());
 }
 }
 

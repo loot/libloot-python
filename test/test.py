@@ -20,7 +20,7 @@ from loot import is_compatible
 from loot import set_logging_callback
 
 def logging_callback(level, message):
-    pass
+    print(level, message)
 
 set_logging_callback(logging_callback)
 
