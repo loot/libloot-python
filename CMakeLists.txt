@@ -156,25 +156,22 @@ ENDIF ()
 # Get version info using Git if available
 find_package(Git)
 
-IF (GIT_FOUND)
-    execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --long --always
-                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-                  OUTPUT_VARIABLE GIT_DESCRIBE_STRING
-                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+IF (NOT DEFINED CPACK_PACKAGE_VERSION)
+    IF (GIT_FOUND)
+        execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --long --always --abbrev=7
+                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                    OUTPUT_VARIABLE GIT_DESCRIBE_STRING
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-    IF (DEFINED ENV{APPVEYOR_REPO_BRANCH})
-        set(GIT_DESCRIBE_STRING "${GIT_DESCRIBE_STRING}_$ENV{APPVEYOR_REPO_BRANCH}")
-    ELSEIF (DEFINED ENV{TRAVIS_BRANCH})
-        set(GIT_DESCRIBE_STRING "${GIT_DESCRIBE_STRING}_$ENV{TRAVIS_BRANCH}")
-    ENDIF()
+        string(REPLACE "/" "-" GIT_DESCRIBE_STRING ${GIT_DESCRIBE_STRING})
+    ELSE()
+        SET (GIT_DESCRIBE_STRING "unknown-version")
+    ENDIF ()
 
-    string(REPLACE "/" "-" GIT_DESCRIBE_STRING ${GIT_DESCRIBE_STRING})
-ELSE()
-    SET (GIT_DESCRIBE_STRING "unknown-version")
-ENDIF ()
+    set(CPACK_PACKAGE_VERSION "${GIT_DESCRIBE_STRING}-python$ENV{PYTHON_VERSION}")
+ENDIF()
 
 set(CPACK_GENERATOR "ZIP")
-set(CPACK_PACKAGE_VERSION "${GIT_DESCRIBE_STRING}-python$ENV{PYTHON_VERSION}")
 set(CPACK_PACKAGE_DIRECTORY "${CMAKE_BINARY_DIR}/package")
 
 include(CPack)

@@ -1,0 +1,100 @@
+name: CI
+
+on:
+  push:
+    # Don't run this workflow when a tag is pushed.
+    branches:
+      - '*'
+  pull_request:
+
+env:
+  MSVC_CONFIG: RelWithDebInfo
+
+jobs:
+  bintray-cleanup:
+    runs-on: ubuntu-18.04
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Remove old artifacts from Bintray
+        shell: bash
+        run: |
+          curl -sfSLO 'https://raw.githubusercontent.com/Ortham/ci-scripts/2.1.4/delete_old_bintray_versions.py'
+          python3 delete_old_bintray_versions.py -g loot/libloot-python -b loot/snapshots/libloot-python -u wrinklyninja -k ${{ secrets.BINTRAY_API_KEY }} -t ${{ secrets.GITHUB_TOKEN }} -n 30
+
+  windows:
+    runs-on: windows-2016
+
+    strategy:
+      matrix:
+        platform: [Win32, x64]
+        python-version: [2.7, 3.7]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get Python architecture
+        id: get-python-architecture
+        shell: bash
+        run: |
+          if [[ "${{ matrix.platform }}" == "Win32" ]]
+          then
+            PLATFORM=x86
+          else
+            PLATFORM=x64
+          fi
+          echo "::set-output name=architecture::$PLATFORM"
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: ${{ steps.get-python-architecture.outputs.architecture }}
+
+      - name: Get descriptive version
+        id: get-version
+        shell: bash
+        run: |
+          GIT_DESCRIBE=$(git describe --tags --long --abbrev=7)
+          DESC_REF=${GIT_DESCRIBE}_${GITHUB_REF#refs/*/}
+          SAFE_DESC_REF=${DESC_REF//[\/<>\"|]/_}
+          echo "::set-output name=version::$SAFE_DESC_REF"
+
+      - name: Run CMake
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G "Visual Studio 15 2017" -A ${{ matrix.platform }} -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}-python${{ matrix.python-version }}"
+          cmake --build . --config ${{ env.MSVC_CONFIG }}
+
+      - name: Run tests
+        run: |
+          cd build
+          ctest -C ${{ env.MSVC_CONFIG }}
+
+      - name: Build archive
+        id: build-archive
+        shell: bash
+        run: |
+          cd build
+          cpack -C ${{ env.MSVC_CONFIG }}
+
+          VERSION="${{ steps.get-version.outputs.version }}-python${{ matrix.python-version }}"
+          if [[ "${{ matrix.platform }}" == "Win32" ]]
+          then
+            PLATFORM=win32
+          else
+            PLATFORM=win64
+          fi
+
+          echo "::set-output name=filename::libloot-python-${VERSION}-${PLATFORM}.zip"
+
+      - name: Upload archive to BinTray
+        shell: bash
+        run: |
+          VERSION="${{ steps.get-version.outputs.version }}"
+          FILENAME="${{ steps.build-archive.outputs.filename }}"
+          curl -sfSL -T "build/package/$FILENAME" -u "wrinklyninja:${{ secrets.BINTRAY_API_KEY }}" "https://bintray.com/api/v1/content/loot/snapshots/libloot-python/${VERSION}/${FILENAME}?publish=1&override=1"
+        if: github.event_name == 'push'

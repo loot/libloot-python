@@ -1,0 +1,92 @@
+name: Release
+
+on:
+  push:
+    tags: '*'
+
+env:
+  MSVC_CONFIG: RelWithDebInfo
+
+jobs:
+  create_release:
+    runs-on: ubuntu-18.04
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      git_tag: ${{ steps.get-git-tag.outputs.name }}
+
+    steps:
+      - name: Get Git tag
+        id: get-git-tag
+        run: echo "::set-output name=name::${GITHUB_REF#refs/*/}"
+
+      - id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get-git-tag.outputs.name }}
+          release_name: libloot-python v${{ steps.get-git-tag.outputs.name }}
+          body: |
+            Requires Windows 7 or later and the [MSVC 2017 x86 redistributable](https://download.visualstudio.microsoft.com/download/pr/749aa419-f9e4-4578-a417-a43786af205e/d59197078cc425377be301faba7dd87a/vc_redist.x86.exe), and [7-Zip](http://www.7-zip.org/) to extract the archive.
+
+  windows:
+    runs-on: windows-2016
+    needs: create_release
+
+    strategy:
+      matrix:
+        platform: [Win32, x64]
+        python-version: [2.7, 3.7]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Get descriptive version
+        id: get-version
+        shell: bash
+        run: |
+          GIT_DESCRIBE=$(git describe --tags --long --abbrev=7)
+          DESC_REF=${GIT_DESCRIBE}_${GITHUB_REF#refs/*/}
+          SAFE_DESC_REF=${DESC_REF//[\/<>\"|]/_}
+          echo "::set-output name=version::$SAFE_DESC_REF"
+
+      - name: Run CMake
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G "Visual Studio 15 2017" -A ${{ matrix.platform }} -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}-python${{ matrix.python-version }}"
+          cmake --build . --config ${{ env.MSVC_CONFIG }}
+
+      - name: Build archive
+        id: build-archive
+        shell: bash
+        run: |
+          cd build
+          cpack -C ${{ env.MSVC_CONFIG }}
+
+          VERSION="${{ steps.get-version.outputs.version }}-python${{ matrix.python-version }}"
+          if [[ "${{ matrix.platform }}" == "Win32" ]]
+          then
+            PLATFORM=win32
+          else
+            PLATFORM=win64
+          fi
+
+          echo "::set-output name=filename::libloot-python-${VERSION}-${PLATFORM}.zip"
+
+      - name: Upload Archive
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: build/package/${{ steps.build-archive.outputs.filename }}
+          asset_name: ${{ steps.build-archive.outputs.filename }}
+          asset_content_type: application/x-7z-compressed
