@@ -11,16 +11,55 @@ env:
   MSVC_CONFIG: RelWithDebInfo
 
 jobs:
-  bintray-cleanup:
+  # Publish to Artifactory as a separate job that runs after the build jobs
+  # because we must first clean out any existing artifacts for this Git ref,
+  # and we don't want to do that as a pre-build step in case the build fails
+  # and we're left with no artifacts published.
+  publish-to-artifactory:
     runs-on: ubuntu-18.04
+    needs: [windows]
     if: github.event_name == 'push'
 
     steps:
-      - name: Remove old artifacts from Bintray
+      - name: Clean up artifacts on Artifactory
+        run: |
+          curl -sfSLO 'https://raw.githubusercontent.com/Ortham/ci-scripts/2.2.0/remove_old_artifactory_files.py'
+
+          python3 remove_old_artifactory_files.py \
+            --artifactory-host loot.jfrog.io \
+            --artifactory-api-key ${{ secrets.ARTIFACTORY_API_KEY }} \
+            --artifactory-repository libloot-python \
+            --current-branch "${GITHUB_REF#refs/*/}" \
+            --github-repository loot/libloot-python \
+            --github-token ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create empty directory for artifacts
+        run: |
+          rm -rf downloaded_artifacts
+          mkdir downloaded_artifacts
+
+      - name: Download all artifacts for this workflow from GitHub Actions
+        uses: actions/download-artifact@v2
+        with:
+          path: downloaded_artifacts
+
+      - name: Publish artifacts to Artifactory
         shell: bash
         run: |
-          curl -sfSLO 'https://raw.githubusercontent.com/Ortham/ci-scripts/2.1.4/delete_old_bintray_versions.py'
-          python3 delete_old_bintray_versions.py -g loot/libloot-python -b loot/snapshots/libloot-python -u wrinklyninja -k ${{ secrets.BINTRAY_API_KEY }} -t ${{ secrets.GITHUB_TOKEN }} -n 30
+          curl -sfSLO 'https://raw.githubusercontent.com/Ortham/ci-scripts/2.2.0/percent_encode.py'
+
+          PERCENT_ENCODED_GIT_REF_NAME=$(python3 percent_encode.py "${GITHUB_REF#refs/*/}")
+
+          for ARTIFACT_DIRECTORY in downloaded_artifacts/*
+          do
+            ARTIFACT_NAME="${ARTIFACT_DIRECTORY#downloaded_artifacts/}"
+            PERCENT_ENCODED_ARTIFACT_NAME=$(python3 percent_encode.py "$ARTIFACT_NAME")
+            curl -sSfL \
+              -X PUT \
+              -T "$ARTIFACT_DIRECTORY/$ARTIFACT_NAME" \
+              -H "X-JFrog-Art-Api: ${{ secrets.ARTIFACTORY_API_KEY }}" \
+              "https://loot.jfrog.io/artifactory/libloot-python/${PERCENT_ENCODED_GIT_REF_NAME}/$PERCENT_ENCODED_ARTIFACT_NAME"
+          done
 
   windows:
     runs-on: windows-2016
@@ -91,10 +130,9 @@ jobs:
 
           echo "::set-output name=filename::libloot-python-${VERSION}-${PLATFORM}.zip"
 
-      - name: Upload archive to BinTray
-        shell: bash
-        run: |
-          VERSION="${{ steps.get-version.outputs.version }}"
-          FILENAME="${{ steps.build-archive.outputs.filename }}"
-          curl -sfSL -T "build/package/$FILENAME" -u "wrinklyninja:${{ secrets.BINTRAY_API_KEY }}" "https://bintray.com/api/v1/content/loot/snapshots/libloot-python/${VERSION}/${FILENAME}?publish=1&override=1"
+      - name: Upload archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ steps.build-archive.outputs.filename }}
+          path: build/package/${{ steps.build-archive.outputs.filename }}
         if: github.event_name == 'push'
