@@ -62,7 +62,7 @@ jobs:
           done
 
   windows:
-    runs-on: windows-2016
+    runs-on: windows-2019
 
     strategy:
       matrix:
@@ -105,7 +105,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -G "Visual Studio 15 2017" -A ${{ matrix.platform }} -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}-python${{ matrix.python-version }}"
+          cmake .. -G "Visual Studio 16 2019" -A ${{ matrix.platform }} -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}-python${{ matrix.python-version }}"
           cmake --build . --config ${{ env.MSVC_CONFIG }}
 
       - name: Run tests

@@ -27,10 +27,10 @@ jobs:
           tag_name: ${{ steps.get-git-tag.outputs.name }}
           release_name: libloot-python v${{ steps.get-git-tag.outputs.name }}
           body: |
-            Requires Windows 7 or later and the [MSVC 2017 x86 redistributable](https://download.visualstudio.microsoft.com/download/pr/749aa419-f9e4-4578-a417-a43786af205e/d59197078cc425377be301faba7dd87a/vc_redist.x86.exe), and [7-Zip](http://www.7-zip.org/) to extract the archive.
+            Requires Windows 7 or later and the [MSVC 2019 x86 redistributable](https://aka.ms/vs/16/release/vc_redist.x86.exe), and [7-Zip](http://www.7-zip.org/) to extract the archive.
 
   windows:
-    runs-on: windows-2016
+    runs-on: windows-2019
     needs: create_release
 
     strategy:
@@ -61,7 +61,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -G "Visual Studio 15 2017" -A ${{ matrix.platform }} -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}-python${{ matrix.python-version }}"
+          cmake .. -G "Visual Studio 16 2019" -A ${{ matrix.platform }} -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}-python${{ matrix.python-version }}"
           cmake --build . --config ${{ env.MSVC_CONFIG }}
 
       - name: Build archive
