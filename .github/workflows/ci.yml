@@ -67,7 +67,7 @@ jobs:
     strategy:
       matrix:
         platform: [Win32, x64]
-        python-version: [2.7, 3.7]
+        python-version: [3.7]
 
     steps:
       - uses: actions/checkout@v2

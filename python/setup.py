@@ -79,11 +79,10 @@ setup(
     distclass=BinaryDistribution,
     classifiers=[
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: C++'
         'Operating System :: Microsoft :: Windows',
         'Intended Audience :: Developers',
     ],
-    python_requires='>=2.7',
+    python_requires='>=3.7',
 )

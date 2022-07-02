@@ -14,7 +14,7 @@ Snapshot builds are available on [Artifactory](https://loot.jfrog.io/ui/repos/tr
 libloot-python-<short revision ID>-python<python version>-win<architecture>.zip
 ```
 
-For example `libloot-python-94de368-python2.7-win32.zip` was built using the revision with shortened commit ID `94de368`.
+For example `libloot-python-94de368-python3.7-win32.zip` was built using the revision with shortened commit ID `94de368`.
 
 ## Documentation
 
