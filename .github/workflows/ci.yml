@@ -20,7 +20,7 @@ jobs:
         python-version: [3.7]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -37,7 +37,7 @@ jobs:
           echo "::set-output name=architecture::$PLATFORM"
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
           architecture: ${{ steps.get-python-architecture.outputs.architecture }}
@@ -81,7 +81,7 @@ jobs:
           echo "::set-output name=filename::libloot-python-${VERSION}-${PLATFORM}.zip"
 
       - name: Upload archive
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.build-archive.outputs.filename }}
           path: build/package/${{ steps.build-archive.outputs.filename }}
