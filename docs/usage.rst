@@ -10,13 +10,13 @@ Build archives contain two binaries:
 * ``loot.*.pyd`` is the Python wrapper
 * ``loot.dll`` is the C++ library DLL that the Python wrapper was built against.
 
-The C++ DLL requires the `Visual C++ 2019 Redistributable (x86)`_
+The C++ DLL requires the `Visual C++ 2022 Redistributable (x86)`_
 to be installed.
 
 To use the wrapper, copy both files to wherever you want to import them from
 (they must be in the same folder), and you're done!
 
-.. _Visual C++ 2019 Redistributable (x86): https://aka.ms/vs/16/release/vc_redist.x86.exe
+.. _Visual C++ 2022 Redistributable (x86): https://aka.ms/vs/17/release/vc_redist.x86.exe
 
 Using the wrapper
 =================
