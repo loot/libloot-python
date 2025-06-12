@@ -1,6 +1,8 @@
 libloot-python
 ==============
 
+**This repository is no longer maintained. A more complete and up to date Python wrapper can be found in the [libloot repository](https://github.com/loot/libloot/tree/aaacebefa053a6b7504bf61a73d2783a5436ca25/python).**
+
 ![CI](https://github.com/loot/libloot-python/workflows/CI/badge.svg?branch=master&event=push)
 [![Documentation Status](https://readthedocs.org/projects/loot-api-python/badge/)](http://loot-api-python.readthedocs.io/)
 
